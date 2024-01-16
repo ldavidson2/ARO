@@ -1,0 +1,55 @@
+* {
+    white-space: pre-wrap;
+    text-align: left;
+}
+
+body {
+    max-height: 100svh;
+}
+
+ul {
+    list-style: none;
+    height: 100%;
+}
+
+li:nth-child(odd) {
+    color: blue;
+    margin-bottom: 2%;
+} 
+
+li:nth-child(even) {
+    color:forestgreen;
+    margin-bottom: 2%;
+} 
+
+form {
+    float: left;
+    margin-left: 2%;
+    width: 71%;
+}
+
+aside {
+    border: 1px black;
+    float: right;
+    width: 25%;
+    margin-right: 2%;
+    height: 100svh;
+}
+
+input {
+    height: 60px;
+    width: 75%;
+    margin-right: 2%;
+}
+
+button {
+    height: 60px;
+    width:  15%;
+    text-align: center;
+}
+
+#userInput {
+    width: 73%;
+    position: fixed;
+    bottom: 20px;
+}
