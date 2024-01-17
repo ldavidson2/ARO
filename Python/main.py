@@ -13,12 +13,6 @@ load_dotenv()
 
 client = OpenAI()
 
-assistant = client.beta.assistants.create(
-    name="ARO",
-    instructions="You are a dungeon master for a dungeons and dragons 5th edition campaign. Create campaigns, generate monsters, npcs, townss and anything else necessary to play the game.",
-    model="gpt-3.5-turbo" 
-)
-
 thread = client.beta.threads.create()
 
 app.add_middleware(
@@ -37,10 +31,20 @@ async def root(request: Request):
 
 @app.get("/queryARO/{user_message}")
 async def get_response(user_message):
-    message = await add_message_to_thread(user_message)
-    messages = await ask_ARO()
+    if "generate an image of" in user_message.lower():
+        new_prompt = "In less than 1000 characters, describe " + user_message.lower().strip("generate an image of")
+        message = await add_message_to_thread(new_prompt)
+        messages = await ask_ARO()
+        print(messages.data[0].content[0].text.value)
+        url = await generate_image(messages.data[0].content[0].text.value)
+        return url
+    else:
+        message = await add_message_to_thread(user_message)
+        messages = await ask_ARO()
+        return messages.data[0].content[0].text.value
+    # url = await generate_image(messages.data[0].content[0].text.value)
 
-    return messages
+    # return messages.data[0].content[0].text.value
 
 async def add_message_to_thread(user_message):
     message = client.beta.threads.messages.create(
@@ -64,13 +68,14 @@ async def ask_ARO():
     messages = client.beta.threads.messages.list(thread.id)
     return messages
 
+async def generate_image(description):
+    response = client.images.generate(
+        model="dall-e-3",
+        prompt=description,
+        size="1024x1024",
+        n=1,
+    )
 
-# completion = client.chat.completions.create(
-#   model="gpt-3.5-turbo",
-#   messages=[
-#     {"role": "system", "content": "You are a poetic assistant, skilled in explaining complex programming concepts with creative flair."},
-#     {"role": "user", "content": "Compose a poem that explains the concept of recursion in programming."}
-#   ]
-# )
-
-# print(completion)
+    image_url = response.data[0].url
+    print(image_url)
+    return image_url

@@ -1,55 +1,163 @@
 * {
-    white-space: pre-wrap;
+    white-space: break-spaces;
     text-align: left;
 }
 
-body {
-    max-height: 100svh;
+#root {
+    position: fixed;
+    top: 0;
+    height: 100svh;
+    width: 100vw;
+}
+
+#main {
+    display: flex;
+    margin: 1.5svh;
+}
+
+#left {
+    line-height: 19px;
+    height: 95svh;
+    width: 60vw;
+    overflow-y: scroll;
+}
+
+#left p {
+    margin: 0;
+}
+
+#right {
+    width: 40vw;
+    float: right;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+#generatedImage {
+    margin: auto;
+    height: 85svh;
+}
+
+#generatedImage img {
+    max-width: 35vw;
+    max-height: 80svh;
+}
+
+div#userInput {
+    background-color: #FFF;
+    display: flex;
+    margin: 0 1.5vw 1vw 1.5vw;
+}
+
+
+textarea {
+    padding: 2px;
+    width: 25vw;
+    margin: 0 1vw;
+}
+
+button {
+    padding: 2px;
+    height: 12svh;
+    width:  8vw;
+    text-align: center;
+}
+.ImageButtonContainer {  
+    border: #000 0.3svh solid;
+    background-color: #4cc0a4;
+}
+
+.ImageButtonContainerRecording {  
+    border: #000 0.svh solid;
+    background-color: #c80900;
+}
+
+.microphoneIcon {
+    margin: auto;
+    height: 9svh;
+    background-color: transparent;
+}
+
+#sendButton {
+    background-color: #1483b5;
+}
+
+.sendIcon {
+    margin: auto;
+    height: 9svh;
+    background-color: transparent;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.15);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+  
+.ImageButtonContainerRecording img {
+    margin: auto;
+    border: none;
+    animation: pulse 2s infinite;
+}
+
+.asideToggle {
+    position: fixed;
+    width: 3vw;
+    top: 40svh;
+    right: 1.2vw;
+    border: none;
+    background-color: transparent;
+}
+
+.asideToggleOpen {
+    position: fixed;
+    top: 40svh;
+    right: 28vw;
+    border: none;
+    background-color: transparent;
+}
+
+.toggleIcon {
+    margin: auto;
+    height: 11svh;
+    background-color: transparent;
+}
+
+aside {
+    line-height: 15px;
+    font-size: 12px;
+    height: 97.5svh;
+    width: 30vw;
+    overflow-y: scroll;
+    border: 1px solid black;
+    position: absolute;
+    right: 0.5vw;
+    z-index: 2;
+    background-color: #FFF;
 }
 
 ul {
+    margin: 0;
+    padding: 1.4svh;
     list-style: none;
     height: 100%;
 }
 
 li:nth-child(odd) {
     color: blue;
-    margin-bottom: 2%;
+    margin-bottom: 1.5svh;
 } 
 
 li:nth-child(even) {
     color:forestgreen;
-    margin-bottom: 2%;
+    margin-bottom: 1.5svh;
 } 
-
-form {
-    float: left;
-    margin-left: 2%;
-    width: 71%;
-}
-
-aside {
-    border: 1px black;
-    float: right;
-    width: 25%;
-    margin-right: 2%;
-    height: 100svh;
-}
-
-input {
-    height: 60px;
-    width: 75%;
-    margin-right: 2%;
-}
-
-button {
-    height: 60px;
-    width:  15%;
-    text-align: center;
-}
-
-#userInput {
-    width: 73%;
-    position: fixed;
-    bottom: 20px;
-}
