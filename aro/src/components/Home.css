@@ -26,6 +26,82 @@
     margin: 0;
 }
 
+.dots {
+    width: 10vw;
+    display: flex;
+    justify-content: center;
+    padding: 3svh 0;
+}
+
+.dots-pulse {
+    position: relative;
+    left: -10030px;
+    width: 12px;
+    height: 12px;
+    border-radius: 6px;
+    color: #000;
+    animation: dots-pulse 1.5s infinite linear;
+    animation-delay: 0.25s;
+}
+
+.dots-pulse::before, .dots-pulse::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    width: 12px;
+    height: 12px;
+    border-radius: 6px;
+    color: #000;
+}
+
+.dots-pulse::before {
+    box-shadow: 9984px 0 0 -4px;
+    animation: dots-pulse-before 1.5s infinite linear;
+    animation-delay: 0s;
+}
+
+.dots-pulse::after {
+    box-shadow: 10014px 0 0 -4px;
+    animation: dots-pulse-after 1.5s infinite linear;
+    animation-delay: 0.5s;
+}
+  
+@keyframes dots-pulse-before {
+    0% {
+        box-shadow: 9984px 0 0 -3px;
+    }
+    30% {
+        box-shadow: 9984px 0 0 2px;
+    }
+    60%, 100% {
+        box-shadow: 9984px 0 0 -3px;
+    }
+}
+
+@keyframes dots-pulse {
+    0% {
+        box-shadow: 9999px 0 0 -3px;
+    }
+    30% {
+        box-shadow: 9999px 0 0 2px;
+    }
+    60%, 100% {
+        box-shadow: 9999px 0 0 -3px;
+    }
+}
+
+@keyframes dots-pulse-after {
+    0% {
+        box-shadow: 10014px 0 0 -3px;
+    }
+    30% {
+        box-shadow: 10014px 0 0 2px;
+    }
+    60%, 100% {
+        box-shadow: 10014px 0 0 -3px;
+    }
+}
+
 #right {
     width: 40vw;
     float: right;
@@ -54,7 +130,7 @@ div#userInput {
 
 
 textarea {
-    padding: 2px;
+    padding: 4px;
     width: 25vw;
     margin: 0 1vw;
 }
@@ -62,16 +138,15 @@ textarea {
 button {
     padding: 2px;
     height: 12svh;
-    width:  8vw;
+    width:  7vw;
     text-align: center;
+    border: none;
 }
 .ImageButtonContainer {  
-    border: #000 0.3svh solid;
     background-color: #4cc0a4;
 }
 
 .ImageButtonContainerRecording {  
-    border: #000 0.svh solid;
     background-color: #c80900;
 }
 
@@ -134,15 +209,15 @@ button {
 
 aside {
     line-height: 15px;
-    font-size: 12px;
-    height: 97.5svh;
+    font-size: 15px;
+    height: 98.2svh;
     width: 30vw;
     overflow-y: scroll;
-    border: 1px solid black;
+    border-left: 1px solid black;
     position: absolute;
-    right: 0.5vw;
+    right: 0;
     z-index: 2;
-    background-color: #FFF;
+    background-color: #efefef;
 }
 
 ul {
@@ -153,11 +228,11 @@ ul {
 }
 
 li:nth-child(odd) {
-    color: blue;
+    color: #123899;
     margin-bottom: 1.5svh;
 } 
 
 li:nth-child(even) {
-    color:forestgreen;
+    color:#469912;
     margin-bottom: 1.5svh;
 } 

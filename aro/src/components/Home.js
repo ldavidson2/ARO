@@ -6,11 +6,14 @@ import send from "./images/send.png";
 import toggleArrow from "./images/toggle-arrow.png";
 import toggleArrowClosed from "./images/toggle-arrow-closed.png";
 import meme from "./images/meme.jpg";
+import TextToSpeech from './TextToSpeech.js';
 
 const Home = () => {
   const [message, setMessage] = useState("");
+  const [displayMessage, setDisplayMessage] = useState("");
   const [generatedImageLink, setGeneratedImageLink] = useState(meme);
   const [imageButtonContainerStyle, setImageButtonContainertyle] = useState("ImageButtonContainer");
+  const [awaitingResponse, setAwaitingResponse] = useState(false);
   const [AROResponse, setAROResponse] = useState("");
   const [dialogHistory, setDialogHistory] = useState(["", ""]);
   const [isRecording, setIsRecording] = useState(false);
@@ -23,25 +26,29 @@ const Home = () => {
   // }, []);
 
   async function queryARO() {
-    const response = await axios.get(`/queryARO/${message}`, {});
-    if (message.includes("generate an image of")) {
+    setDisplayMessage("");
+    if (message.toLowerCase().includes("generate an image of")) {
+      const response = await axios.get(`/queryARO/${message}`, {});
       setGeneratedImageLink(response.data);
     } else {
+      setAwaitingResponse(true);
       addDialogToList(message);
+      const response = await axios.get(`/queryARO/${message}`, {});
       const newDialog = response.data;
       setAROResponse(newDialog);
+      setAwaitingResponse(false);
       addDialogToList(newDialog);
     }
   }
 
   function onChange(event) {
     setMessage(event.target.value);
-    console.log(event.target.value);
+    setDisplayMessage(event.target.value);
   }
 
   const handleKeypress = (event) => {
-    if (event.key === "Enter") {
-      document.getElementById("buttons").click();
+    if (event.keyCode === 13 && event.shiftKey == false) {
+      document.getElementById("sendButton").click();
     }
   };
 
@@ -59,6 +66,7 @@ const Home = () => {
     recognition.onresult = (event) => {
       const transcript = event.results[0][0].transcript;
       setMessage(transcript);
+      setDisplayMessage(transcript);
       console.log(transcript);
     };
   }
@@ -75,7 +83,16 @@ const Home = () => {
   return (
     <div id="main">
       <div id="left">
-        <p>{AROResponse}</p>
+        {awaitingResponse ? (
+          <div class="dots">
+            <div class="dots-pulse"></div>
+          </div>
+        ) : (
+          <div>
+          <TextToSpeech text={AROResponse} />
+          <p>{AROResponse}</p>
+          </div>
+        )}
       </div>
       <div id="right">
         <form>
@@ -92,7 +109,7 @@ const Home = () => {
                 <img className="microphoneIcon" src={microphone} alt="Microphone Button" />
               </button>
             )}
-            <textarea value={message} onChange={onChange}></textarea>
+            <textarea value={displayMessage} onChange={onChange} onKeyDown={handleKeypress}></textarea>
             <button
               id="sendButton"
               type="button"
@@ -107,17 +124,21 @@ const Home = () => {
       </div>
       {asideShowing ? (
         <div>
-      <button className="asideToggleOpen" onClick={() => setAsideShowing(!asideShowing)}><img className="toggleIcon" src={toggleArrow} alt="Toggle Arrow" /></button>
-      <aside>
-        <ul>
-          {dialogHistory.map((str, index) => (
-            <li key={index}>{str}</li>
-          ))}
-        </ul>
-      </aside>
-      </div>
-      ) : (        
-      <button className="asideToggle" onClick={() => setAsideShowing(!asideShowing)}><img className="toggleIcon" src={toggleArrowClosed} alt="Closed Toggle Arrow" /></button>
+          <button className="asideToggleOpen" onClick={() => setAsideShowing(!asideShowing)}>
+            <img className="toggleIcon" src={toggleArrow} alt="Toggle Arrow" />
+          </button>
+          <aside>
+            <ul>
+              {dialogHistory.map((str, index) => (
+                <li key={index}>{str}</li>
+              ))}
+            </ul>
+          </aside>
+        </div>
+      ) : (
+        <button className="asideToggle" onClick={() => setAsideShowing(!asideShowing)}>
+          <img className="toggleIcon" src={toggleArrowClosed} alt="Closed Toggle Arrow" />
+        </button>
       )}
     </div>
   );
