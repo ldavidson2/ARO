@@ -15,39 +15,39 @@ load_dotenv()
 client = OpenAI()
 thread = client.beta.threads.create()
 
-campaign_info_exists = False
-campaign_format_exists = False
+# campaign_info_exists = False
+# campaign_format_exists = False
 
-files = client.files.list()
+# files = client.files.list()
 
-for file in files.data:
-    print(file)
-    if file.filename == "campaign-info.txt":
-        campaign_info_exists = True
-    if file.filename == "campaign.json":
-        campaign_format_exists = True
+# for file in files.data:
+#     print(file)
+#     if file.filename == "campaign-info.txt":
+#         campaign_info_exists = True
+#     if file.filename == "campaign.json":
+#         campaign_format_exists = True
 
-if not campaign_info_exists:
-    campaign_info = client.files.create(
-        file=open("aro-files/campaign-info.txt", "br"),
-        purpose="assistants"
-    )
-    campaign_info_exists = True
+# if not campaign_info_exists:
+#     campaign_info = client.files.create(
+#         file=open("aro-files/campaign-info.txt", "br"),
+#         purpose="assistants"
+#     )
+#     campaign_info_exists = True
 
-if not campaign_format_exists:
-    campaign_format = client.files.create(
-        file=open("aro-files/campaign.json", "br"),
-        purpose="assistants"
-    )
-    campaign_format_exists = True
+# if not campaign_format_exists:
+#     campaign_format = client.files.create(
+#         file=open("aro-files/campaign.json", "br"),
+#         purpose="assistants"
+#     )
+#     campaign_format_exists = True
 
-try:
-    my_updated_assistant = client.beta.assistants.update(
-        os.getenv('ASSISTANT_ID'),
-        file_ids=[campaign_info.id, campaign_format.id],
-    )
-except:
-    print("could not find the files.")
+# try:
+#     my_updated_assistant = client.beta.assistants.update(
+#         os.getenv('ASSISTANT_ID'),
+#         file_ids=[campaign_info.id, campaign_format.id],
+#     )
+# except:
+#     print("could not find the files.")
 
 
 app.add_middleware(

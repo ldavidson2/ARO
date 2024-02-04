@@ -72,7 +72,7 @@ const TextToSpeech = ({ text }) => {
   };
 
   return (
-    <div>
+    <div id="textT">
       <div id="voiceSettings">
         <div>
           <label>Voice:</label>
@@ -86,15 +86,15 @@ const TextToSpeech = ({ text }) => {
         </div>
         <div>
           <label>Pitch:</label>
-          <input type="range" min="0.5" max="2" step="0.1" value={pitch} onChange={handlePitchChange} />
+          <input class="slider" type="range" min="0.5" max="2" step="0.1" value={pitch} onChange={handlePitchChange} />
         </div>
         <div>
           <label>Speed:</label>
-          <input type="range" min="0.5" max="2" step="0.1" value={rate} onChange={handleRateChange} />
+          <input class="slider" type="range" min="0.5" max="2" step="0.1" value={rate} onChange={handleRateChange} />
         </div>
         <div>
           <label>Volume:</label>
-          <input type="range" min="0" max="1" step="0.1" value={volume} onChange={handleVolumeChange} />
+          <input class="slider" type="range" min="0" max="1" step="0.1" value={volume} onChange={handleVolumeChange} />
         </div>
       </div>
       <div id="audioControls">

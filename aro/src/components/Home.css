@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Germania+One&display=swap');
+
 * {
     white-space: break-spaces;
     text-align: left;
@@ -8,22 +10,29 @@
     top: 0;
     height: 100svh;
     width: 100vw;
+    background-image: url("images/background.png");
+    background-repeat: no-repeat;
 }
 
 #main {
+	font-family: 'Germania One';
     display: flex;
-    margin: 1.5svh;
+    margin: 2svh;
 }
 
 #left {
-    line-height: 19px;
+    line-height: 4svh;
     height: 95svh;
     width: 60vw;
-    overflow-y: scroll;
+    font-size: 20px;
 }
 
 #left p {
-    margin: 0;
+    margin: -2svh 0 0 0;
+    color: #1D1C1C;
+    padding-top: 2svh;
+    height: 80svh;
+    overflow-y: scroll;
 }
 
 .dots {
@@ -39,7 +48,7 @@
     width: 12px;
     height: 12px;
     border-radius: 6px;
-    color: #000;
+    color: #1D1C1C;
     animation: dots-pulse 1.5s infinite linear;
     animation-delay: 0.25s;
 }
@@ -51,7 +60,7 @@
     width: 12px;
     height: 12px;
     border-radius: 6px;
-    color: #000;
+    color: #1D1C1C;
 }
 
 .dots-pulse::before {
@@ -102,6 +111,15 @@
     }
 }
 
+#textToSpeech {
+    display: block;
+    background: rgba(125, 17, 226, 0.274);
+    height: 19svh;
+    margin-left: -2svh;
+    padding-left: 2svh;
+    padding-top: 0.5svh;
+}
+
 #right {
     width: 40vw;
     float: right;
@@ -113,56 +131,65 @@ form {
 }
 
 #generatedImage {
-    margin: auto;
-    height: 85svh;
+    background-color: transparent;
+    width: 40vw;
+    height: 80svh;
+    text-align: center;
 }
 
 #generatedImage img {
     max-width: 35vw;
-    max-height: 80svh;
+    max-height: 78svh;
 }
 
-div#userInput {
-    background-color: #FFF;
+div#userInput { 
+    height: 19svh;  
+    width: 41vw;
+    background: rgba(125, 17, 226, 0.274);
     display: flex;
-    margin: 0 1.5vw 1vw 1.5vw;
+    justify-content: space-evenly;
+    align-items: center;
 }
 
 
 textarea {
     padding: 4px;
-    width: 25vw;
-    margin: 0 1vw;
+    height: 10.5svh;
+    width: 22vw;
+    margin: auto 1vw;
+    background: rgba(255, 255, 255, 0.5);
 }
 
 button {
     padding: 2px;
     height: 12svh;
-    width:  7vw;
+    width:  6.5vw;
     text-align: center;
     border: none;
+    border-radius: 5px;
 }
+
 .ImageButtonContainer {  
-    background-color: #4cc0a4;
+    background-color: transparent;
 }
 
 .ImageButtonContainerRecording {  
-    background-color: #c80900;
+    background-color: transparent;
 }
 
 .microphoneIcon {
     margin: auto;
-    height: 9svh;
+    height: 11svh;
     background-color: transparent;
 }
 
 #sendButton {
-    background-color: #1483b5;
+    background-color: transparent;
 }
 
 .sendIcon {
     margin: auto;
-    height: 9svh;
+    height: 11svh;
     background-color: transparent;
 }
 
@@ -188,7 +215,7 @@ button {
     position: fixed;
     width: 3vw;
     top: 40svh;
-    right: 1.2vw;
+    right: 2vw;
     border: none;
     background-color: transparent;
 }
@@ -210,14 +237,15 @@ button {
 aside {
     line-height: 15px;
     font-size: 15px;
-    height: 98.2svh;
+    height: 100svh;
     width: 30vw;
     overflow-y: scroll;
-    border-left: 1px solid black;
+    border-left: 1px solid #1D1C1C;
     position: absolute;
+    top: 0;
     right: 0;
     z-index: 2;
-    background-color: #efefef;
+    background-color: #cedcde;
 }
 
 ul {
@@ -228,11 +256,11 @@ ul {
 }
 
 li:nth-child(odd) {
-    color: #123899;
+    color: #1c7c37;
     margin-bottom: 1.5svh;
 } 
 
 li:nth-child(even) {
-    color:#469912;
+    color:#438294;
     margin-bottom: 1.5svh;
 } 

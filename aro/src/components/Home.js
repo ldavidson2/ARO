@@ -89,8 +89,10 @@ const Home = () => {
           </div>
         ) : (
           <div>
-          <TextToSpeech text={AROResponse} />
           <p>{AROResponse}</p>
+            <div id="textToSpeech">
+          <TextToSpeech text={AROResponse} />
+          </div>
           </div>
         )}
       </div>
