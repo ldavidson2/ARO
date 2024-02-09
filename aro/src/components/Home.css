@@ -37,6 +37,7 @@
 
 .dots {
     width: 10vw;
+    height: 74svh;
     display: flex;
     justify-content: center;
     padding: 3svh 0;
@@ -215,7 +216,7 @@ button {
     position: fixed;
     width: 3vw;
     top: 40svh;
-    right: 2vw;
+    right: 2.5vw;
     border: none;
     background-color: transparent;
 }
@@ -223,7 +224,7 @@ button {
 .asideToggleOpen {
     position: fixed;
     top: 40svh;
-    right: 28vw;
+    right: 30vw;
     border: none;
     background-color: transparent;
 }

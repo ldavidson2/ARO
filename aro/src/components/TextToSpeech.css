@@ -29,14 +29,13 @@ input {
   width: 17.75vw;
   background: rgba(255, 255, 255, 0.5);
   border: 1.5px solid #1D1C1C;
-  /* border-radius: 10px; */
 }
 
 .slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     border: none;
-    width: 3svh;
-    height: 3svh;
+    width: 3.25svh;
+    height: 3.25svh;
     border-radius: 0 !important;
     cursor: pointer;
     background: url('images/d20-icon.png') no-repeat;
