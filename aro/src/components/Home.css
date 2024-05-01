@@ -20,7 +20,31 @@
     margin: 2svh;
 }
 
+.openMenu {
+    width: 16vw;
+    height: 100svh;
+    background-color: #cedcde;
+    position: absolute;
+    top: 0svh;
+    left: 0vw;    
+    z-index: 2;
+}
+
+.navButton {
+    position: absolute;
+    top: 9px;
+    left: 7px;
+    background-color: transparent;
+    width: 4vw;
+    height: 4vw;
+}
+
+.navIcon {
+    width: 4vw;
+}
+
 #left {
+    margin-left: 4.25vw;
     line-height: 4svh;
     height: 95svh;
     width: 60vw;
@@ -28,7 +52,7 @@
 }
 
 #left p {
-    margin: -2svh 0 0 0;
+    margin: -2.5svh 0 0 0;
     color: #1D1C1C;
     padding-top: 2svh;
     height: 80svh;
@@ -40,6 +64,7 @@
     height: 74svh;
     display: flex;
     justify-content: center;
+    margin-left: 0.75vw;
     padding: 3svh 0;
 }
 
@@ -265,3 +290,8 @@ li:nth-child(even) {
     color:#438294;
     margin-bottom: 1.5svh;
 } 
+
+span {
+    color: #6C6;
+    font-size: 135px;
+}

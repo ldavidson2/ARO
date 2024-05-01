@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "./Home.css";
 import microphone from "./images/microphone.png";
@@ -6,7 +6,11 @@ import send from "./images/send.png";
 import toggleArrow from "./images/toggle-arrow.png";
 import toggleArrowClosed from "./images/toggle-arrow-closed.png";
 import meme from "./images/meme.jpg";
-import TextToSpeech from './TextToSpeech.js';
+import TextToSpeech from "./TextToSpeech.js";
+import FileUpload from "./FileUpload.js";
+import nav from "./images/nav.png";
+import CharacterSheet from "./CharacterSheet.js";
+import CombatMap from "./CombatMap.js";
 
 const Home = () => {
   const [message, setMessage] = useState("");
@@ -19,26 +23,56 @@ const Home = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [asideShowing, setAsideShowing] = useState(false);
   const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+  const [open, setOpen] = useState(false);
+  const [characterSheetOpen, setCharacterSheetOpen] = useState(false);
+  const [characters, setCharacters] = useState();
+  const [characterId, setCharacterId] = useState();
+  const tokens = [
+    { id: "token1", row: 5, column: 2, url: "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/7ad89412-f260-4de8-9220-746d0683c0d0/dao6dot-59c25a34-9197-47c0-9581-0226b477a288.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzdhZDg5NDEyLWYyNjAtNGRlOC05MjIwLTc0NmQwNjgzYzBkMFwvZGFvNmRvdC01OWMyNWEzNC05MTk3LTQ3YzAtOTU4MS0wMjI2YjQ3N2EyODgucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.2GFO2Z8JFOxDafOIracG6C78lhtIA5oOyGH43DWggMM" },
+    { id: "token2", row: 7, column: 4, url: "https://i.pinimg.com/1200x/80/c4/c8/80c4c8ec675da2c0304bfb54cbbac67c.jpg" },
+    // Add more tokens as needed
+  ];
+  let menuRef = useRef(null);
 
-  // useEffect(() => {
-  //   if (generatedImageLink == "") {
-  //   }
-  // }, []);
+  useEffect(() => {
+    getCharacters();
+    const handler = (e) => {
+      if (!menuRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    };
+
+    async function getCharacters() {
+      // const response = await axios.get("/getCharacters", {});
+      // setCharacters(response.data);
+    }
+
+    document.addEventListener("mousedown", handler);
+
+    return () => {
+      document.removeEventListener("mousedown", handler);
+    };
+  });
+
+  function showCharacterSheet(characterId) {
+    setCharacterId(characterId);
+    setCharacterSheetOpen(true);
+  }
 
   async function queryARO() {
-    setDisplayMessage("");
-    if (message.toLowerCase().includes("generate an image of")) {
-      const response = await axios.get(`/queryARO/${message}`, {});
-      setGeneratedImageLink(response.data);
-    } else {
-      setAwaitingResponse(true);
-      addDialogToList(message);
-      const response = await axios.get(`/queryARO/${message}`, {});
-      const newDialog = response.data;
-      setAROResponse(newDialog);
-      setAwaitingResponse(false);
-      addDialogToList(newDialog);
-    }
+    // setDisplayMessage("");
+    // if (message.toLowerCase().includes("generate an image of")) {
+    //   const response = await axios.get(`/queryARO/${message}`, {});
+    //   setGeneratedImageLink(response.data);
+    // } else {
+    //   setAwaitingResponse(true);
+    //   addDialogToList(message);
+    //   const response = await axios.get(`/queryARO/${message}`, {});
+    //   const newDialog = response.data;
+    //   setAROResponse(newDialog);
+    //   setAwaitingResponse(false);
+    //   addDialogToList(newDialog);
+    // }
   }
 
   function onChange(event) {
@@ -47,7 +81,7 @@ const Home = () => {
   }
 
   const handleKeypress = (event) => {
-    if (event.keyCode === 13 && event.shiftKey == false) {
+    if (event.keyCode === 13 && event.shiftKey === false) {
       document.getElementById("sendButton").click();
     }
   };
@@ -58,7 +92,6 @@ const Home = () => {
 
   async function startRecording() {
     setImageButtonContainertyle("ImageButtonContainerRecording");
-    console.log("recording started");
     setIsRecording(!isRecording);
     if (recognition) {
       recognition.start();
@@ -73,7 +106,6 @@ const Home = () => {
 
   const stopRecording = () => {
     setImageButtonContainertyle("ImageButtonContainer");
-    console.log("recording stopped");
     setIsRecording(!isRecording);
     if (recognition) {
       recognition.stop();
@@ -82,19 +114,54 @@ const Home = () => {
 
   return (
     <div id="main">
+      {characterSheetOpen && <CharacterSheet characterId={characterId} />}
+      {open ? (
+        <div className="openMenu" ref={menuRef}>
+          <p>Characters</p>
+          <ul>
+            {characters &&
+              characters.map((character) => (
+                <li key={character.PK}>
+                  <button
+                    onClick={() => {
+                      showCharacterSheet(character.PK);
+                    }}
+                  >
+                    {character.name}
+                  </button>
+                </li>
+              ))}
+          </ul>
+        </div>
+      ) : (
+        <div ref={menuRef}>
+          <button
+            className="navButton"
+            onClick={() => {
+              setOpen(!open);
+            }}
+          >
+            <img src={nav} className="navIcon" alt="Navigation Menu Icon" />
+          </button>
+        </div>
+      )}
       <div id="left">
+        <div>
+          <CombatMap rows={8} cols={18} tokens={tokens} />
+        </div>
         {awaitingResponse ? (
-          <div class="dots">
-            <div class="dots-pulse"></div>
+          <div className="dots">
+            <div className="dots-pulse"></div>
           </div>
         ) : (
           <div>
-          <p>{AROResponse}</p>
+            <p>{AROResponse}</p>
           </div>
         )}
-            <div id="textToSpeech">
+        {/* <FileUpload /> */}
+        <div id="textToSpeech">
           <TextToSpeech text={AROResponse} />
-          </div>
+        </div>
       </div>
       <div id="right">
         <form>

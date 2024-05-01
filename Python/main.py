@@ -1,4 +1,6 @@
 from openai import OpenAI
+import boto3
+from boto3.dynamodb.conditions import Key, Attr
 import os
 from dotenv import load_dotenv
 from fastapi import Body, FastAPI, Request, Form, Response, File, UploadFile
@@ -6,14 +8,26 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse
 import json
+import tempfile
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 load_dotenv()
 
+awsAccessKey = os.getenv('ACCESS_KEY')
+awsSecretAccessKey = os.getenv('SECRET_ACCESS_KEY')
+region = os.getenv('REGION')
+
+dynamodb = boto3.resource('dynamodb', region_name=region,
+         aws_access_key_id=awsAccessKey,
+         aws_secret_access_key= awsSecretAccessKey)
+table = dynamodb.Table(os.getenv('TABLE'))
+
+
 client = OpenAI()
 thread = client.beta.threads.create()
+VECTOR_STORE_ID = "vs_ZlLWms8d7tFBYyGZx5zLDaBh"
 
 # campaign_info_exists = False
 # campaign_format_exists = False
@@ -74,12 +88,9 @@ async def get_response(user_message):
         url = await generate_image(messages.data[0].content[0].text.value)
         return url
     else:
-        message = await add_message_to_thread(user_message)
+        message = await add_message_to_thread("Please consult the 'DnD_Guidelines.txt' before responding but do not mention the file. " + user_message)
         messages = await ask_ARO()
         return messages.data[0].content[0].text.value
-    # url = await generate_image(messages.data[0].content[0].text.value)
-
-    # return messages.data[0].content[0].text.value
 
 async def add_message_to_thread(user_message):
     message = client.beta.threads.messages.create(
@@ -88,6 +99,61 @@ async def add_message_to_thread(user_message):
         content= user_message
     )
     return message
+
+@app.get("/getCharacters")
+async def get_response():
+    response = table.scan(
+        FilterExpression=Attr('SK').contains("CHAR")
+    )      
+
+    characters = []
+    for item in response['Items']:
+        name = item['Name']
+        pk = item['PK']
+        characters.append({"name": name, "PK": pk})
+    return characters
+
+@app.get("/getCharacter")
+async def get_response(character_id):
+    response = table.get_item(
+        Key={
+            'PK': character_id,
+            'SK': character_id
+        }
+    )
+    return response["Item"]
+
+@app.post("/uploadFile")
+async def upload_file(file: UploadFile = File(...)):
+    temp_dir = tempfile.mkdtemp()
+    
+    try:
+        file_path = os.path.join(temp_dir, file.filename)
+        with open(file_path, "wb") as f:
+            f.write(await file.read())
+        
+        file_streams = [open(file_path, "rb")]
+        
+        file_batch = client.beta.vector_stores.file_batches.upload_and_poll(
+            vector_store_id=VECTOR_STORE_ID,
+            files=file_streams
+        )
+        
+        return {"filename": file.filename}
+    finally:
+        # Close all file streams
+        for file_stream in file_streams:
+            file_stream.close()
+        
+        # Remove all files within the temporary directory
+        for root, dirs, files in os.walk(temp_dir, topdown=False):
+            for name in files:
+                os.remove(os.path.join(root, name))
+            for name in dirs:
+                os.rmdir(os.path.join(root, name))
+        
+        # Remove the temporary directory
+        os.rmdir(temp_dir)
 
 async def ask_ARO():
     run =  client.beta.threads.runs.create(

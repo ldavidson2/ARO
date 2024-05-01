@@ -1,0 +1,283 @@
+.characterSheetContainer {
+    position: absolute;
+    display: flex;
+    align-items: flex-start;
+    top: 6svh;
+    left: 13vw;
+    width: 74vw;
+    height: 88svh;
+    background-color: #FFF;
+    padding: 1.5svh;
+    z-index: 2;
+    font-size: 2.2svh;
+}
+
+.characterSheetContainer input {
+    font-family: 'Germania One';
+    font-size: 2.2svh;
+    height: 3svh;
+    /* border-color: #FFF;
+    border-style: solid; */
+}
+
+.main {
+    width: 57vw;
+}
+
+.characterSheetHeader {
+    margin-top: 2.5svh;
+    vertical-align: top;
+    height: 9svh;
+    justify-content: space-between;
+}
+
+.characterSheetHeader label {
+    margin: 1svh 2svh;
+    height: 3.25svh;
+    font-size: 2.5svh;
+}
+
+label.characterName, .characterName input {
+    width: 11vw;
+}
+
+label.characterRace, .characterRace input {
+    width: 8.5vw;
+}
+
+label.characterClass, .characterClass input {
+    width: 8.5vw;
+}
+
+label.characterLevel, .characterLevel input {
+    width: 3.5vw;
+}
+
+label.characterExperience, .characterExperience input {
+    width: 3.5vw;
+}
+
+.characterSheetHeader input {
+    margin: 0.25svh 0;
+    font-size: 3.2svh;
+    padding: 0.5svh;
+}
+
+.characterBody {
+    margin-top: 4svh;
+    display: flex;
+    height: 75svh;
+}
+
+.bodyColumnOne {
+    flex: 1;
+    margin-right: 1vw;
+}
+
+.bodyColumnOne div {
+    height: 12.25svh;
+}
+
+.bodyColumnOne p {
+    text-align: center;
+    margin: 0 auto 0.25svh auto;
+}
+
+.bodyColumnOne input {
+    margin: auto;
+    display: block;
+    width: 3.5vw;
+    text-align: center;
+}
+
+.bodyColumnOne p{
+    font-size: 2.6svh;
+}
+
+.bodyColumnOne input:nth-of-type(odd) {
+    font-size: 2.6svh;
+    height: 4svh;
+    padding-top: 0;
+    padding-bottom: 2.1svh;
+}
+
+.bodyColumnOne input:nth-of-type(even) {
+    margin: -2.75svh auto 2.5svh auto;
+    border: 0.1svh solid #000;
+    border-bottom: none;
+    width: 2vw;
+    height: 2.2svh;
+}
+
+.bodyColumnTwo {
+    flex: 2.5;
+}
+
+.skillsContainer td:nth-of-type(odd) {
+    width: 9vw;
+}
+
+.skillsContainer input {
+    max-width: 2.75vw;
+    height: 2.75svh;
+}
+
+.bodyColumnThree {
+    flex: 6;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0.9svh;
+}
+
+.extraInfo {
+    flex: 2;
+    background-color: aqua;
+}
+
+.extraInfo label {
+    vertical-align: middle;
+    width: 8vw;
+}
+
+.extraInfo input {
+    width: 4vw;
+    display: block
+}
+
+.feats {
+    flex: 4;
+    background-color: violet;
+}
+
+.favourites {
+    flex: 2;
+    background-color: lawngreen;
+}
+
+.briefInventory {
+    flex: 2;
+    background-color: darkorange;
+
+}
+
+.languages {
+    flex: 1;
+    background-color: yellow;
+}
+
+.rightColumn {
+    position: absolute;
+    right: 0;
+}
+
+#characterArt {
+    width: 15vw;
+    max-height: 30svh;
+    margin: auto 2vw;
+    object-fit: scale-down;
+}
+
+.movementAndArmor {
+    width: 12vw;
+    display: flex;
+    justify-content: space-around;
+    margin: 2svh auto;
+}
+
+.movementAndArmor label{
+    width: 4vw;
+    display: flex;
+    margin-left: 0.5vw;
+}
+
+.movementAndArmor img {
+    width: 1.25vw;
+    margin: 0 0.5vw 0 0;
+    object-fit: contain;
+}
+
+.movementAndArmor input {
+    width: 3vw;
+}
+
+.hitpointsTitle, .hitDiceTitle, .deathSavesTitle {
+    text-align: center;
+    margin: 1svh 0 0 0;
+    vertical-align: baseline;
+}
+
+.hitpointsContainer {
+    width: 9vw;
+    height: 4.5svh;
+    display: flex;
+    justify-content: space-between;
+    vertical-align: top;
+    align-items: center;
+    margin: auto;
+}
+
+.hitDiceContainer {
+    width: 8vw;
+    height: 4.5svh;
+    display: flex;
+    justify-content: space-between;
+    vertical-align: top;
+    align-items: center;
+    margin: auto;
+}
+
+.hitpointsContainer input, .hitDiceContainer input {
+    width: 1.5vw !important;
+    text-align: center;
+}
+
+.hitpointsContainer p, .hitDiceContainer p {
+    text-align: center;
+    height: 3.25svh;
+    vertical-align: middle;
+    position: relative;
+}
+
+/* .leftColumn {
+    width: 19vw;
+    margin-left: -2vw;
+}
+
+#inspiration {
+    position: absolute;
+    top: 5svh;
+    right: 5svh;
+    width: 3vw;
+    margin: 0;
+}
+
+.attributes {
+    height: 13.5svh;
+    width: 50vw;
+    margin: 4.5svh auto;
+    display: flex;
+    justify-content: space-between;
+}
+
+.attributes label {
+    margin: 2svh;
+    width: 6.5vw;
+    height: 3.25svh;
+    text-align: center;
+}
+
+.attributes input:nth-of-type(odd) {
+    margin: 0;
+    width: 4vw;
+    text-align: center;
+}
+
+.attributes input:nth-of-type(even) {
+    margin: 0.25svh 0;
+    width: 2vw;
+    text-align: center;
+}
+
+.abilityModifiers {
+    font-size: 2.55svh !important;
+} */

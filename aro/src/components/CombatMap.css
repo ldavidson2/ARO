@@ -1,0 +1,61 @@
+.combatMap {
+    margin: auto;
+    height: 60svh;
+    width: 50.5vw;
+    min-width: 550px;
+    border: 1px #000 solid;
+}
+
+.moveableIcon {
+    max-width: 3.5vw;
+    max-height: 6svh;
+}
+
+.hexagon {
+    float: left;
+    margin-right: -0.81vw;
+    margin-bottom: -3.34svh;
+}
+
+.hexagon:nth-of-type(even) {
+    margin-top: 3.52svh;
+}
+
+.hexLeft {
+    float: left;
+    width: 0;
+    border-right: 0.9vw solid #000;
+    border-top: 3.466svh solid transparent;
+    border-bottom: 3.466svh solid transparent;
+}
+
+.hexMiddle {
+    display: flex;
+    float: left;
+    width: 1.8vw;
+    height: 6.873svh;
+    background: #000;
+}
+
+.hexCentre {
+    width: 1px;
+    height: 1px;
+    margin: auto;
+    align-self: center;
+}
+
+.hexRight {
+    float: left;
+    width: 0;
+    border-left: 0.9vw solid #000;
+    border-top: 3.466svh solid transparent;
+    border-bottom: 3.466svh solid transparent;
+}
+
+.hexRow {
+    clear: left;
+}
+
+.hexRow:first-of-type {
+    margin-top: -6.75svh;
+}
