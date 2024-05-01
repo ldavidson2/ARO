@@ -3,14 +3,15 @@ import Hexagon from "./Hexagon.js";
 import jillieToken from "./images/Jillie-Token.png";
 
 const CombatMap = ({ rows, cols, tokens }) => {
-  const [iconPositions, setIconPositions] = useState({
-    token: { x: 50, y: 380 },
-  });
+  const [iconPositions, setIconPositions] = useState({});
   const [hexWidth, setHexWidth] = useState(0);
   const [hexHeight, setHexHeight] = useState(0);
   const activeIconRef = useRef(null);
+  const [tokenWidth, setTokenWidth] = useState(0);
+  const [tokenHeight, setTokenHeight] = useState(0);
   const initialOffsetRef = useRef({ x: 0, y: 0 });
   const combatMapRef = useRef(null);
+  const hexRef = useRef(null);
   const containerRef = useRef(null);
   const tokenRef = useRef(null);
 
@@ -20,17 +21,35 @@ const CombatMap = ({ rows, cols, tokens }) => {
     const hexRightWidth = parseFloat(window.getComputedStyle(document.querySelector(".hexRight")).borderLeftWidth);
     setHexWidth((parseFloat(hexStyles.width) + hexLeftWidth + hexRightWidth) / 2);
     setHexHeight(parseFloat(hexStyles.height));
+    setTokenHeight(parseFloat(window.getComputedStyle(document.querySelector(".moveableIcon")).width));
+    setTokenWidth(parseFloat(window.getComputedStyle(document.querySelector(".moveableIcon")).height));
     const moveableIcon = tokenRef.current;
-    const containerHeight = containerRef.current.getBoundingClientRect().height;
+    const containerHeight = parseFloat(window.getComputedStyle(document.querySelector(".combatMap")).height);
     const initialTokenY = containerHeight - containerHeight / 2.15;
-    const initialCoordinates = calculateHexCoordinates(5, 8);
-    setIconPositions({
-      token: { x: initialCoordinates.x, y: initialCoordinates.y },
+    const initialPositions = {};
+    tokens.forEach((token) => {
+      const { row, column } = token;
+      const { x, y } = calculateHexCoordinates(row, column, token.ref);
+      initialPositions[token.id] = { x, y };
     });
-    calculateNearestHexCentre();
-  }, []);
 
-  const calculateHexCoordinates = (row, col) => {
+    setIconPositions(initialPositions);
+  }, [rows, cols, tokens]);
+
+  const calculateTokenCoordinates = (row, col, hexWidth, hexHeight) => {
+    const x = (col + 3) * hexWidth + hexWidth / 2;
+    let y;
+
+    if (col % 2 !== 0) {
+      y = (row + 1) * hexHeight + hexHeight / 2;
+    } else {
+      y = row * hexHeight + hexHeight;
+    }
+
+    return { x, y };
+  };
+
+  const calculateHexCoordinates = (row, col, tokenRef) => {
     let combatMapRect = combatMapRef.current.getBoundingClientRect();
 
     let x = (col + 3) * hexWidth + hexWidth / 2;
@@ -61,8 +80,8 @@ const CombatMap = ({ rows, cols, tokens }) => {
       y = nearestHexCentre.y - combatMapRect.top;
     }
 
-    x -= tokenRef.current.offsetWidth / 2;
-    y -= tokenRef.current.offsetHeight / 2;
+    x -= tokenWidth / 2;
+    y -= tokenHeight / 2;
 
     return { x, y };
   };
@@ -71,6 +90,7 @@ const CombatMap = ({ rows, cols, tokens }) => {
     event.preventDefault();
 
     const { clientX, clientY } = getCoordinates(event);
+    console.log(combatMapRef.current);
     const combatMapRect = combatMapRef.current.getBoundingClientRect();
 
     const offsetX = clientX - combatMapRect.left;
@@ -124,8 +144,8 @@ const CombatMap = ({ rows, cols, tokens }) => {
     if (nearestHexCentre) {
       const { x, y } = nearestHexCentre.getBoundingClientRect();
       const combatMapRect = combatMapRef.current.getBoundingClientRect();
-      const offsetX = x - combatMapRect.left - tokenRef.current.offsetWidth / 2;
-      const offsetY = y - combatMapRect.top - tokenRef.current.offsetHeight / 2;
+      const offsetX = x - combatMapRect.left - tokenWidth / 2;
+      const offsetY = y - combatMapRect.top - tokenHeight / 2;
 
       setIconPositions((prevPositions) => ({
         ...prevPositions,
@@ -179,26 +199,31 @@ const CombatMap = ({ rows, cols, tokens }) => {
   };
 
   return (
-    <div className="combatContainer" ref={containerRef}>
+    <div className="combatContainer">
       <div className="combatMap" ref={combatMapRef}>
-        <img
-          className="moveableIcon"
-          src={jillieToken}
-          alt="Token"
-          style={{
-            transform: `translate(${iconPositions.token.x}px, ${iconPositions.token.y}px)`,
-          }}
-          onMouseDown={(e) => handleMouseDown(e, "token")}
-          onTouchStart={(e) => handleTouchStart(e, "token")}
-          ref={tokenRef}
-        />
-        {Array.from({ length: rows }).map((_, rowIndex) => (
-          <div className="hexRow" key={rowIndex}>
-            {Array.from({ length: cols }).map((_, colIndex) => (
-              <Hexagon key={`${rowIndex}-${colIndex}`} />
-            ))}
-          </div>
+        {tokens.map((token) => (
+          <img
+            key={token.id}
+            className="moveableIcon"
+            src={token.url}
+            alt="Token"
+            style={{
+              transform: `translate(${iconPositions[token.id]?.x}px, ${iconPositions[token.id]?.y}px)`,
+            }}
+            onMouseDown={(e) => handleMouseDown(e, token.id)}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+          />
         ))}
+        <div className="hexagonContainer">
+          {Array.from({ length: rows }).map((_, rowIndex) => (
+            <div className="hexRow" key={rowIndex}>
+              {Array.from({ length: cols }).map((_, colIndex) => (
+                <Hexagon key={`${rowIndex}-${colIndex}`} ref={hexRef} />
+              ))}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

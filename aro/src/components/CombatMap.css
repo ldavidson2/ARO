@@ -7,8 +7,8 @@
 }
 
 .moveableIcon {
-    max-width: 3.5vw;
-    max-height: 6svh;
+    height: 6svh;
+    position: absolute;
 }
 
 .hexagon {
@@ -54,8 +54,4 @@
 
 .hexRow {
     clear: left;
-}
-
-.hexRow:first-of-type {
-    margin-top: -6.75svh;
 }
