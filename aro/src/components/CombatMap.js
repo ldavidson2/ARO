@@ -1,55 +1,42 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, createRef } from "react";
 import Hexagon from "./Hexagon.js";
-import jillieToken from "./images/Jillie-Token.png";
 
 const CombatMap = ({ rows, cols, tokens }) => {
+  const activeIconRef = useRef(null);
+  const combatMapRef = useRef(null);
+  const tokenRefs = useRef([]);
+  const initialOffsetRef = useRef({ x: 0, y: 0 });
   const [iconPositions, setIconPositions] = useState({});
+    const initialPositions = {};
   const [hexWidth, setHexWidth] = useState(0);
   const [hexHeight, setHexHeight] = useState(0);
-  const activeIconRef = useRef(null);
   const [tokenWidth, setTokenWidth] = useState(0);
   const [tokenHeight, setTokenHeight] = useState(0);
-  const initialOffsetRef = useRef({ x: 0, y: 0 });
-  const combatMapRef = useRef(null);
-  const hexRef = useRef(null);
-  const containerRef = useRef(null);
-  const tokenRef = useRef(null);
 
   useEffect(() => {
     const hexStyles = window.getComputedStyle(document.querySelector(".hexagon"));
     const hexLeftWidth = parseFloat(window.getComputedStyle(document.querySelector(".hexLeft")).borderRightWidth);
     const hexRightWidth = parseFloat(window.getComputedStyle(document.querySelector(".hexRight")).borderLeftWidth);
+    
     setHexWidth((parseFloat(hexStyles.width) + hexLeftWidth + hexRightWidth) / 2);
     setHexHeight(parseFloat(hexStyles.height));
-    setTokenHeight(parseFloat(window.getComputedStyle(document.querySelector(".moveableIcon")).width));
-    setTokenWidth(parseFloat(window.getComputedStyle(document.querySelector(".moveableIcon")).height));
-    const moveableIcon = tokenRef.current;
-    const containerHeight = parseFloat(window.getComputedStyle(document.querySelector(".combatMap")).height);
-    const initialTokenY = containerHeight - containerHeight / 2.15;
-    const initialPositions = {};
+    setTokenWidth(parseFloat(window.getComputedStyle(document.querySelector(".moveableIcon0")).height));
+    setTokenHeight(parseFloat(window.getComputedStyle(document.querySelector(".moveableIcon0")).width));
+
     tokens.forEach((token) => {
       const { row, column } = token;
-      const { x, y } = calculateHexCoordinates(row, column, token.ref);
+      const { x, y } = calculateHexCoordinates(row, column);
       initialPositions[token.id] = { x, y };
     });
 
+    tokenRefs.current = Array(tokens.length)
+      .fill()
+      .map((_, i) => tokenRefs.current[i] || createRef());
+
     setIconPositions(initialPositions);
-  }, [rows, cols, tokens]);
+  }, []);
 
-  const calculateTokenCoordinates = (row, col, hexWidth, hexHeight) => {
-    const x = (col + 3) * hexWidth + hexWidth / 2;
-    let y;
-
-    if (col % 2 !== 0) {
-      y = (row + 1) * hexHeight + hexHeight / 2;
-    } else {
-      y = row * hexHeight + hexHeight;
-    }
-
-    return { x, y };
-  };
-
-  const calculateHexCoordinates = (row, col, tokenRef) => {
+  const calculateHexCoordinates = (row, col) => {
     let combatMapRect = combatMapRef.current.getBoundingClientRect();
 
     let x = (col + 3) * hexWidth + hexWidth / 2;
@@ -86,11 +73,10 @@ const CombatMap = ({ rows, cols, tokens }) => {
     return { x, y };
   };
 
-  const handleMouseDown = (event, icon) => {
+  async function handleMouseDown(event, tokenId) {
     event.preventDefault();
 
     const { clientX, clientY } = getCoordinates(event);
-    console.log(combatMapRef.current);
     const combatMapRect = combatMapRef.current.getBoundingClientRect();
 
     const offsetX = clientX - combatMapRect.left;
@@ -98,17 +84,17 @@ const CombatMap = ({ rows, cols, tokens }) => {
 
     setIconPositions((prevPositions) => ({
       ...prevPositions,
-      [icon]: { x: offsetX, y: offsetY },
+      [tokenId]: { x: offsetX, y: offsetY },
     }));
 
-    activeIconRef.current = icon;
+    activeIconRef.current = tokenId;
     initialOffsetRef.current = { x: offsetX, y: offsetY };
 
     document.addEventListener("mousemove", handleMouseMove);
     document.addEventListener("mouseup", handleMouseUp);
-  };
+  }
 
-  const handleMouseMove = (event) => {
+  const handleMouseMove = (event, tokenId) => {
     event.preventDefault();
 
     if (!activeIconRef.current) return;
@@ -122,8 +108,8 @@ const CombatMap = ({ rows, cols, tokens }) => {
     const initialX = iconPositions[activeIconRef.current].x;
     const initialY = iconPositions[activeIconRef.current].y;
 
-    const maxX = combatMapRect.width - tokenRef.current.offsetWidth;
-    const maxY = combatMapRect.height - tokenRef.current.offsetHeight;
+    const maxX = combatMapRect.width - tokenWidth;
+    const maxY = combatMapRect.height - tokenHeight;
 
     const newX = Math.max(Math.min(initialX + offsetX - initialOffsetRef.current.x, maxX), 0);
     const newY = Math.max(Math.min(initialY + offsetY - initialOffsetRef.current.y, maxY), 0);
@@ -134,36 +120,35 @@ const CombatMap = ({ rows, cols, tokens }) => {
     }));
   };
 
-  const handleMouseUp = () => {
+  async function handleMouseUp(e, tokenId, tokenRef) {
     activeIconRef.current = null;
-
     document.removeEventListener("mousemove", handleMouseMove);
     document.removeEventListener("mouseup", handleMouseUp);
+    if (tokenId) {
+      const nearestHexCentre = calculateNearestHexCentre(tokenRef.current.getBoundingClientRect());
+      if (nearestHexCentre) {
+        const { x, y } = nearestHexCentre.getBoundingClientRect();
+        const combatMapRect = combatMapRef.current.getBoundingClientRect();
+        const offsetX = x - combatMapRect.left - tokenWidth / 2;
+        const offsetY = y - combatMapRect.top - tokenHeight / 2;
 
-    const nearestHexCentre = calculateNearestHexCentre();
-    if (nearestHexCentre) {
-      const { x, y } = nearestHexCentre.getBoundingClientRect();
-      const combatMapRect = combatMapRef.current.getBoundingClientRect();
-      const offsetX = x - combatMapRect.left - tokenWidth / 2;
-      const offsetY = y - combatMapRect.top - tokenHeight / 2;
+        setIconPositions((prevPositions) => ({
+          ...prevPositions,
+          [tokenId]: { x: offsetX, y: offsetY },
+        }));
 
-      setIconPositions((prevPositions) => ({
-        ...prevPositions,
-        token: { x: offsetX, y: offsetY },
-      }));
+        let newRow = Math.floor(offsetY / hexHeight);
+        let newCol = Math.floor(offsetX / hexWidth);
+        if (newCol < 0) {
+          newCol = 0;
+        }
 
-      let newRow = Math.floor(offsetY / hexHeight);
-      let newCol = Math.floor(offsetX / hexWidth);
-      if (newCol < 0) {
-        newCol = 0;
+        console.log("Token position:", { newRow, newCol });
       }
-
-      console.log("Token position:", { newRow, newCol });
     }
-  };
+  }
 
-  const calculateNearestHexCentre = () => {
-    const tokenBoundingBox = tokenRef.current.getBoundingClientRect();
+  const calculateNearestHexCentre = (tokenBoundingBox) => {
     const tokenCenterX = tokenBoundingBox.left + tokenBoundingBox.width / 2;
     const tokenCenterY = tokenBoundingBox.top + tokenBoundingBox.height / 2;
     const hexCentres = document.querySelectorAll(".hexCentre");
@@ -192,34 +177,29 @@ const CombatMap = ({ rows, cols, tokens }) => {
     return { clientX: event.clientX, clientY: event.clientY };
   };
 
-  const handleTouchStart = (event, icon) => {
-    handleMouseDown(event, icon);
-    document.addEventListener("touchmove", handleMouseMove, { passive: false });
-    document.addEventListener("touchend", handleMouseUp);
-  };
-
   return (
     <div className="combatContainer">
       <div className="combatMap" ref={combatMapRef}>
-        {tokens.map((token) => (
+        {tokens.map((token, index) => (
           <img
+            ref={tokenRefs.current[index]}
             key={token.id}
-            className="moveableIcon"
+            className={`moveableIcon${index}`}
             src={token.url}
             alt="Token"
             style={{
               transform: `translate(${iconPositions[token.id]?.x}px, ${iconPositions[token.id]?.y}px)`,
             }}
             onMouseDown={(e) => handleMouseDown(e, token.id)}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
+            onMouseMove={(e) => handleMouseMove(e, token.id)}
+            onMouseUp={(e) => handleMouseUp(e, token.id, tokenRefs.current[index])}
           />
         ))}
         <div className="hexagonContainer">
           {Array.from({ length: rows }).map((_, rowIndex) => (
             <div className="hexRow" key={rowIndex}>
               {Array.from({ length: cols }).map((_, colIndex) => (
-                <Hexagon key={`${rowIndex}-${colIndex}`} ref={hexRef} />
+                <Hexagon key={`${rowIndex}-${colIndex}`} />
               ))}
             </div>
           ))}
