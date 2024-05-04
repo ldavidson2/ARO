@@ -19,74 +19,306 @@ const Home = () => {
   const [imageButtonContainerStyle, setImageButtonContainertyle] = useState("ImageButtonContainer");
   const [awaitingResponse, setAwaitingResponse] = useState(false);
   const [AROResponse, setAROResponse] = useState(
-    "As your group emerges from the dense, dark embrace of the ancient forest, you find yourselves stepping into a vast, open clearing. The trees behind you whisper with the movements of smaller creatures, but ahead, the landscape opens dramatically, offering a blend of both danger and opportunity. Sunlight pierces through the canopy behind you, casting long shadows over the grass that sways gently in the breeze—a stark contrast to the oppressive darkness of the woods. Across the grassy expanse, the land subtly transforms; stone and sand disrupt the green tapestry, leading toward a snaking ribbon of water that cuts through the terrain. This stream, shimmering under the sunlight, flows across your path, creating a natural barrier that you must navigate. As your eyes trace its path, you notice that the stream widens, its banks marshy and treacherous. To the south, beyond this rocky and water-riddled obstacle zone, the terrain rises slightly. Larger rocks and boulders define this higher ground, suggesting a more solid footing but also more exposure. Here, the stream’s end can be seen flowing into a large pool, its waters dark and still, bordered by sand—a hauntingly serene mirror reflecting the chaos of your forthcoming confrontation. As you take in this sprawling scene, the signs of your adversaries are unmistakable. To your far right, near the southeastern edge of the clearing where shadows meld with sunlight, the hulking form of a Minotaur paces slowly. Its breaths are like puffs of steam in the cool air, and each step is deliberate, heavy, shaking the slight pebbles around its feet. Closer to the central stream, just off the rough path where the rocks meet the water, the massive, serpentine coils of a Hydra disturb the water, sending ripples lapping at the banks. It’s an unsettling sight—the creature’s multiple heads, each with its own lethal gaze, swivel alertly, watching for any movement. And there, near the northern boundary where the field meets the melancholic forest, a Cyclops stands, its single, eerie eye scanning the landscape. Its club, fashioned from a gnarled tree trunk, rests against its shoulder, ready to swing with devastating force. You face these formidable foes across a terrain that challenges both the mind and body. Strategy here is as important as strength—the choices you make in navigating this complex landscape could mean the difference between victory and defeat."
+    ""
   );
   const [dialogHistory, setDialogHistory] = useState(["", ""]);
   const [isRecording, setIsRecording] = useState(false);
   const [asideShowing, setAsideShowing] = useState(false);
   const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-  const [open, setOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [characterSheetOpen, setCharacterSheetOpen] = useState(false);
   const [characters, setCharacters] = useState();
   const [characterId, setCharacterId] = useState();
-  const [inCombat, setInCombat] = useState(true);
-  const tokens = [
-    {
-      id: 1,
-      row: 6,  // Moved from row 0 to row 6
-      column: 24,
-      image: "minotaur",
-    },
-    {
-      id: 2,
-      row: 6,
-      column: 6,  // Moved right to column 6
-      image: "cyclops",
-    },
-    {
-      id: 3,
-      row: 7,
-      column: 5,  // Moved left to column 5
-      image: "hydra",
-    },
-    {
-      id: 4,
-      row: 7,  // Jillie moved to row 7
-      column: 4,
-      image: "jillie",
-    },
-    {
-      id: 5,
-      row: 6,  // Lou moved to row 6
-      column: 4,
-      image: "lou",
-    },
-    {
-      id: 6,
-      row: 9,  // Giant moved down closer to the central area
-      column: 23,
-      image: "giant",
-    }
-  ];
-  const terrainMap = [
-    ["forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest"],
-    ["forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest"],
-    ["forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest"],
-    ["forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest"],
-    ["grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass"],
-    ["grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass"],
-    ["grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass"],
-    ["stone", "stone", "stone", "stone", "stone", "sand", "sand", "water", "water", "water", "water", "water", "water", "water", "water", "sand", "sand", "stone", "stone", "stone", "stone", "stone", "stone", "stone", "stone"],
-    ["water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water"],
-    ["sand", "sand", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "sand", "sand"]
-  ];
-  let menuRef = useRef(null);
+  const [tokens, setTokens] = useState();
+  const [terrainMap, setTerrainMap] = useState();
+  const [inCombat, setInCombat] = useState(false);
+  const menuRef = useRef(null);
+  const asideRef = useRef(null);
+  const asideToggleRef = useRef(null);
+  // const tokens = [
+  //   { id: 1, row: 5, column: 10, image: "lou" },
+  //   { id: 2, row: 5, column: 16, image: "minotaur" },
+  //   { id: 3, row: 5, column: 20, image: "minotaur" },
+  // ];
+  // const terrainMap = [
+  //   [
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "dirt",
+  //     "dirt",
+  //     "dirt",
+  //     "dirt",
+  //     "dirt",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //   ],
+  //   [
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "dirt",
+  //     "dirt",
+  //     "dirt",
+  //     "dirt",
+  //     "dirt",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //   ],
+  //   [
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "dirt",
+  //     "dirt",
+  //     "dirt",
+  //     "dirt",
+  //     "dirt",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //   ],
+  //   [
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "dirt",
+  //     "dirt",
+  //     "dirt",
+  //     "dirt",
+  //     "dirt",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //   ],
+  //   [
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "dirt",
+  //     "dirt",
+  //     "dirt",
+  //     "dirt",
+  //     "dirt",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //   ],
+  //   [
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "dirt",
+  //     "dirt",
+  //     "dirt",
+  //     "dirt",
+  //     "dirt",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //   ],
+  //   [
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "dirt",
+  //     "dirt",
+  //     "dirt",
+  //     "dirt",
+  //     "dirt",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //   ],
+  //   [
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "dirt",
+  //     "dirt",
+  //     "dirt",
+  //     "dirt",
+  //     "dirt",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //   ],
+  //   [
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "dirt",
+  //     "dirt",
+  //     "dirt",
+  //     "dirt",
+  //     "dirt",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //   ],
+  //   [
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "dirt",
+  //     "dirt",
+  //     "dirt",
+  //     "dirt",
+  //     "dirt",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //     "forest",
+  //   ],
+  // ];
 
   useEffect(() => {
     getCharacters();
     const handler = (e) => {
-      if (!menuRef.current.contains(e.target)) {
-        setOpen(false);
+      if (!asideRef.current.contains(e.target) && !menuRef.current.contains(e.target)) {
+        setMenuOpen(false);
+        setAsideShowing(false);
       }
     };
 
@@ -108,19 +340,31 @@ const Home = () => {
   }
 
   async function queryARO() {
-    // setDisplayMessage("");
-    // if (message.toLowerCase().includes("generate an image of")) {
-    //   const response = await axios.get(`/queryARO/${message}`, {});
-    //   setGeneratedImageLink(response.data);
-    // } else {
-    //   setAwaitingResponse(true);
-    //   addDialogToList(message);
-    //   const response = await axios.get(`/queryARO/${message}`, {});
-    //   const newDialog = response.data;
-    //   setAROResponse(newDialog);
-    //   setAwaitingResponse(false);
-    //   addDialogToList(newDialog);
-    // }
+    setDisplayMessage("");
+    if (message.toLowerCase().includes("generate an image of")) {
+      const response = await axios.get(`/queryARO/${message}`, {});
+      setGeneratedImageLink(response.data);
+    } else {
+      setAwaitingResponse(true);
+      addDialogToList(message);
+      const response = await axios.get(`/queryARO/${message}`, {});
+      console.log(response.data);
+      console.log(response.data.Mode);
+      if ((response.data.Mode).toLowerCase().includes("combat initiation")) {
+        await setTerrainMap(response.data.Terrain);
+        await setTokens(response.data.Tokens);
+        setInCombat(true);
+      }
+      else if ((response.data.Mode).toLowerCase().includes("combat")) {
+        await setTokens(response.data.Tokens);
+        setInCombat(true);        
+      }
+      console.log(response.data.Mode);
+      const newDialog = response.data.Response;
+      setAROResponse(newDialog);
+      setAwaitingResponse(false);
+      addDialogToList(newDialog);
+    }
   }
 
   function onChange(event) {
@@ -163,7 +407,7 @@ const Home = () => {
   return (
     <div id="main">
       {characterSheetOpen && <CharacterSheet characterId={characterId} />}
-      {open ? (
+      {menuOpen ? (
         <div className="openMenu" ref={menuRef}>
           <p>Characters</p>
           <ul>
@@ -186,7 +430,7 @@ const Home = () => {
           <button
             className="navButton"
             onClick={() => {
-              setOpen(!open);
+              setMenuOpen(!menuOpen);
             }}
           >
             <img src={nav} className="navIcon" alt="Navigation Menu Icon" />
@@ -262,24 +506,23 @@ const Home = () => {
           </div>
         </form>
       </div>
-      {asideShowing ? (
-        <div>
-          <button className="asideToggleOpen" onClick={() => setAsideShowing(!asideShowing)}>
-            <img className="toggleIcon" src={toggleArrow} alt="Toggle Arrow" />
+      <div ref={asideRef}>
+        {asideShowing ? (
+          <div>
+            <aside>
+              <ul>
+                {dialogHistory.map((str, index) => (
+                  <li key={index}>{str}</li>
+                ))}
+              </ul>
+            </aside>
+          </div>
+        ) : (
+          <button className="asideToggle" onClick={() => setAsideShowing(true)}>
+            <img ref={asideToggleRef} className="toggleIcon" src={toggleArrowClosed} alt="Closed Toggle Arrow" />
           </button>
-          <aside>
-            <ul>
-              {dialogHistory.map((str, index) => (
-                <li key={index}>{str}</li>
-              ))}
-            </ul>
-          </aside>
-        </div>
-      ) : (
-        <button className="asideToggle" onClick={() => setAsideShowing(!asideShowing)}>
-          <img className="toggleIcon" src={toggleArrowClosed} alt="Closed Toggle Arrow" />
-        </button>
-      )}
+        )}
+      </div>
     </div>
   );
 };

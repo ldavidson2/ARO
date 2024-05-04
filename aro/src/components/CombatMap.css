@@ -2,7 +2,7 @@
     position: absolute;
     left: 24vw;
     height: 75svh;
-    width: 70vw;
+    width: calc(auto + 2vw);
     min-width: 550px;
     /* border: 1px #000 solid; */
 }

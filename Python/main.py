@@ -84,13 +84,14 @@ async def get_response(user_message):
         new_prompt = "In less than 1000 characters, describe " + user_message.lower().strip("generate an image of")
         message = await add_message_to_thread(new_prompt)
         messages = await ask_ARO()
-        print(messages.data[0].content[0].text.value)
-        url = await generate_image(messages.data[0].content[0].text.value)
+        url = await generate_image(json.loads(messages.data[0].content[0].text.value)['Response'])
         return url
     else:
-        message = await add_message_to_thread("Please consult the 'DnD_Guidelines.txt' before responding but do not mention the file. " + user_message)
+        message = await add_message_to_thread("Determin the appropriate response and return only one response to the following input: " + user_message)
         messages = await ask_ARO()
-        return messages.data[0].content[0].text.value
+        response = messages.data[0].content[0].text.value
+        print(response)
+        return   Response(content=response, media_type="application/json") 
 
 async def add_message_to_thread(user_message):
     message = client.beta.threads.messages.create(

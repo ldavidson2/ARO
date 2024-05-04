@@ -33,16 +33,16 @@ const CombatMap = ({ rows, cols, tokens, terrainMap }) => {
     minotaur: Minotaur,
   }
   const terrainImages = {
-    grass: grass,
-    sand: sand,
-    water: water,
-    forest: forest,
-    cobblestone: cobblestone,
-    dirt: dirt,
-    lava: lava,
-    stone: stone,
-    marbleFloor: marbleFloor,
-    woodFloor: woodFloor,
+    g: grass,
+    s: sand,
+    w: water,
+    f: forest,
+    c: cobblestone,
+    d: dirt,
+    l: lava,
+    s: stone,
+    mf: marbleFloor,
+    wf: woodFloor,
   };
 
   useEffect(() => {
@@ -57,14 +57,15 @@ const CombatMap = ({ rows, cols, tokens, terrainMap }) => {
       .map((_, i) => tokenRefs.current[i] || createRef());
 
     setIconPositions(initialPositions);
-    const handleResize = () => {
-      centerAllTokens();
-    };
     window.addEventListener("resize", handleResize);
     return () => {
       window.removeEventListener("resize", handleResize);
     };
   }, [tokens]);
+
+    const handleResize = () => {
+      centerAllTokens();
+    };
 
   const calculateHexCoordinates = (row, col) => {
     const hexStyles = window.getComputedStyle(document.querySelector(".hexagon"));
@@ -76,7 +77,7 @@ const CombatMap = ({ rows, cols, tokens, terrainMap }) => {
     let currentTokenHeight = parseFloat(window.getComputedStyle(document.querySelector(".moveableIcon0")).height);
     let combatMapRect = combatMapRef.current.getBoundingClientRect();
 
-    let x = (col + 9) * currentHexWidth + currentHexWidth / 2;
+    let x = (col + 10) * currentHexWidth + currentHexWidth / 2;
     let y;
 
     if (col % 2 !== 0) {
