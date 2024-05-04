@@ -7,7 +7,7 @@
 }
 
 .combatMap img {
-    height: 6svh;
+    width: 3.25vw;
     position: absolute;
 }
 
@@ -24,7 +24,7 @@
 .hexLeft {
     float: left;
     width: 0;
-    border-right: 0.9vw solid #000;
+    border-right: 0.9vw solid transparent;
     border-top: 3.466svh solid transparent;
     border-bottom: 3.466svh solid transparent;
 }
@@ -34,7 +34,14 @@
     float: left;
     width: 1.8vw;
     height: 6.873svh;
-    background: #000;
+}
+
+.hexMiddle img {
+    margin-left: -0.83vw;
+    height: 6.923svh;
+    width: 3.55vw;
+    position: absolute;
+    z-index: -1;
 }
 
 .hexCentre {
@@ -43,11 +50,20 @@
     margin: auto;
     align-self: center;
 }
+/* 
+.hexImage {
+    z-index: 2;
+    height: 6.873svh;
+    width: 6vw;
+    background: url("images/grass-tile.png");
+    background-repeat: no-repeat;
+    background-size: contain;
+} */
 
 .hexRight {
     float: left;
     width: 0;
-    border-left: 0.9vw solid #000;
+    border-left: 0.9vw solid transparent;
     border-top: 3.466svh solid transparent;
     border-bottom: 3.466svh solid transparent;
 }
@@ -55,3 +71,137 @@
 .hexRow {
     clear: left;
 }
+
+/* 
+.combatContainer {
+    position: relative;
+  }
+  
+  .combatMap {
+    margin: auto;
+    border: 1px #000 solid;
+    position: relative;
+  }
+  
+  .combatMap img {
+    position: absolute;
+  }
+  
+  .hexagon {
+    float: left;
+  }
+  
+  .hexagon:nth-of-type(even) {
+    margin-top: 3.52vh;
+  }
+  
+  .hexLeft {
+    float: left;
+    width: 0;
+  }
+  
+  .hexMiddle {
+    display: flex;
+    float: left;
+  }
+  
+  .hexCentre {
+    width: 1px;
+    height: 1px;
+    margin: auto;
+    align-self: center;
+  }
+  
+  .hexRight {
+    float: left;
+    width: 0;
+  }
+  
+  .hexRow {
+    clear: left;
+  }
+  
+
+  @media (max-width: 1000px) {
+      
+    .combatMap {
+      height: 60px;
+      width: 50.5px;
+      min-width: 550px;
+    }
+    
+    .combatMap img {
+      width: 3px;
+    }
+    
+    .hexagon {
+      margin-right: -0.81px;
+      margin-bottom: -3.34px;
+    }
+    
+    .hexagon:nth-of-type(even) {
+      margin-top: 3.52px;
+    }
+    
+    .hexLeft {
+      float: left;
+      border-right: 0.9px solid #38d807;
+      border-top: 3.466px solid transparent;
+      border-bottom: 3.466px solid transparent;
+    }
+    
+    .hexMiddle {
+      width: 1.8px;
+      height: 6.873px;
+      background: #006eff;
+    }
+    
+    .hexRight {
+      border-left: 0.9px solid #8f14c0;
+      border-top: 3.466px solid transparent;
+      border-bottom: 3.466px solid transparent;
+    }
+}
+
+
+  @media (min-width: 1000px) {
+      
+    .combatMap {
+      height: 60vh;
+      width: 50.5vw;
+      min-width: 550px;
+    }
+    
+    .combatMap img {
+      width: 3vw;
+    }
+    
+    .hexagon {
+      margin-right: -0.81vw;
+      margin-bottom: -3.34vh;
+    }
+    
+    .hexagon:nth-of-type(even) {
+      margin-top: 3.52vh;
+    }
+    
+    .hexLeft {
+      float: left;
+      border-right: 0.9vw solid #ff0000;
+      border-top: 3.466vh solid transparent;
+      border-bottom: 3.466vh solid transparent;
+    }
+    
+    .hexMiddle {
+      width: 1.8vw;
+      height: 6.873vh;
+      background: #ffae00;
+    }
+    
+    .hexRight {
+      border-left: 0.9vw solid rgb(255, 230, 0);
+      border-top: 3.466vh solid transparent;
+      border-bottom: 3.466vh solid transparent;
+    }
+}
+   */

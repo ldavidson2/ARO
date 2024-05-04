@@ -28,10 +28,20 @@ const Home = () => {
   const [characters, setCharacters] = useState();
   const [characterId, setCharacterId] = useState();
   const tokens = [
-    { id: 1, row: 7, column: 17, url: "https://preview.redd.it/3hdi9fk7ayw81.png?width=550&format=png&auto=webp&s=da1c7b6c9afcf9f8004384975f98846528a7b214" },
-    { id: 2, row: 0, column: 1, url: "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/7ad89412-f260-4de8-9220-746d0683c0d0/dao6dot-59c25a34-9197-47c0-9581-0226b477a288.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzdhZDg5NDEyLWYyNjAtNGRlOC05MjIwLTc0NmQwNjgzYzBkMFwvZGFvNmRvdC01OWMyNWEzNC05MTk3LTQ3YzAtOTU4MS0wMjI2YjQ3N2EyODgucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.2GFO2Z8JFOxDafOIracG6C78lhtIA5oOyGH43DWggMM" },
-    { id: 3, row: 2, column: 2, url: "https://raw.githubusercontent.com/IsThisMyRealName/too-many-tokens-dnd/main/Thug/ThugElfFemaleMelee%20(10).webp" },
+    { id: 1, row: 0, column: 0, url: "https://preview.redd.it/3hdi9fk7ayw81.png?width=550&format=png&auto=webp&s=da1c7b6c9afcf9f8004384975f98846528a7b214" },
+    { id: 2, row: 6, column: 3, url: "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/7ad89412-f260-4de8-9220-746d0683c0d0/dao6dot-59c25a34-9197-47c0-9581-0226b477a288.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzdhZDg5NDEyLWYyNjAtNGRlOC05MjIwLTc0NmQwNjgzYzBkMFwvZGFvNmRvdC01OWMyNWEzNC05MTk3LTQ3YzAtOTU4MS0wMjI2YjQ3N2EyODgucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.2GFO2Z8JFOxDafOIracG6C78lhtIA5oOyGH43DWggMM" },
+    { id: 3, row: 2, column: 16, url: "https://raw.githubusercontent.com/IsThisMyRealName/too-many-tokens-dnd/main/Thug/ThugElfFemaleMelee%20(10).webp" },
     // Add more tokens as needed
+  ];
+  const terrainMap = [
+    ["water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water"],
+    ["water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water"],
+    ["sand", "sand", "sand", "sand", "sand", "sand", "sand", "sand", "sand", "sand", "sand", "sand", "sand", "sand", "sand", "sand", "sand", "sand"],
+    ["sand", "sand", "sand", "sand", "sand", "sand", "sand", "sand", "sand", "sand", "sand", "sand", "sand", "sand", "sand", "sand", "sand", "sand"],
+    ["grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass"],
+    ["grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass"],
+    ["forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest"],
+    ["forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest"]
   ];
   let menuRef = useRef(null);
 
@@ -148,7 +158,7 @@ const Home = () => {
       )}
       <div id="left">
         <div>
-          <CombatMap rows={8} cols={18} tokens={tokens} />
+          <CombatMap rows={8} cols={18} tokens={tokens} terrainMap={terrainMap} />
         </div>
         {awaitingResponse ? (
           <div className="dots">
