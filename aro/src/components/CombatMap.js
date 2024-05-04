@@ -1,9 +1,21 @@
 import React, { useState, useRef, useEffect, createRef } from "react";
 import Hexagon from "./Hexagon.js";
-import grass from "./images/grass-tile.png"
-import sand from "./images/sand-tile.png"
-import water from "./images/water-tile.png"
-import forest from "./images/forest-tile.png"
+import Jillie from "./images/tokens/Jillie.png"
+import Lou from "./images/tokens/Lou.png"
+import Cyclops from "./images/tokens/cyclops.png"
+import Giant from "./images/tokens/giant.png"
+import Hydra from "./images/tokens/hydra.png"
+import Minotaur from "./images/tokens/minotaur.png"
+import grass from "./images/tiles/grass-tile.png"
+import sand from "./images/tiles/sand-tile.png"
+import water from "./images/tiles/water-tile.png"
+import forest from "./images/tiles/forest-tile.png"
+import cobblestone from "./images/tiles/cobblestone-tile.png"
+import dirt from "./images/tiles/dirt-tile.png"
+import lava from "./images/tiles/lava-tile.png"
+import stone from "./images/tiles/stone-tile.png"
+import marbleFloor from "./images/tiles/marble-floor-tile.png"
+import woodFloor from "./images/tiles/wood-floor-tile.png"
 
 const CombatMap = ({ rows, cols, tokens, terrainMap }) => {
   const activeIconRef = useRef(null);
@@ -12,17 +24,28 @@ const CombatMap = ({ rows, cols, tokens, terrainMap }) => {
   const initialOffsetRef = useRef({ x: 0, y: 0 });
   const [iconPositions, setIconPositions] = useState({});
   const initialPositions = {};
+  const tokenImages = {
+    jillie: Jillie,
+    lou: Lou,
+    cyclops: Cyclops,
+    giant: Giant,
+    hydra: Hydra,
+    minotaur: Minotaur,
+  }
   const terrainImages = {
     grass: grass,
     sand: sand,
     water: water,
     forest: forest,
+    cobblestone: cobblestone,
+    dirt: dirt,
+    lava: lava,
+    stone: stone,
+    marbleFloor: marbleFloor,
+    woodFloor: woodFloor,
   };
 
   useEffect(() => {
-    console.log(terrainMap);
-    console.log(terrainMap[0]);
-    console.log(terrainMap[0][0]);
     tokens.forEach((token) => {
       const { row, column } = token;
       const { x, y } = calculateHexCoordinates(row, column);
@@ -41,7 +64,7 @@ const CombatMap = ({ rows, cols, tokens, terrainMap }) => {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [tokens]);
 
   const calculateHexCoordinates = (row, col) => {
     const hexStyles = window.getComputedStyle(document.querySelector(".hexagon"));
@@ -53,7 +76,7 @@ const CombatMap = ({ rows, cols, tokens, terrainMap }) => {
     let currentTokenHeight = parseFloat(window.getComputedStyle(document.querySelector(".moveableIcon0")).height);
     let combatMapRect = combatMapRef.current.getBoundingClientRect();
 
-    let x = (col + 3) * currentHexWidth + currentHexWidth / 2;
+    let x = (col + 9) * currentHexWidth + currentHexWidth / 2;
     let y;
 
     if (col % 2 !== 0) {
@@ -207,10 +230,8 @@ const CombatMap = ({ rows, cols, tokens, terrainMap }) => {
           newCol = 0;
         }
 
-        console.log(tokens[tokenId - 1]);
         tokens[tokenId - 1].row = newRow;
         tokens[tokenId - 1].column = newCol;
-        console.log(tokens[tokenId - 1]);
 
         console.log("Token position:", { newRow, newCol });
       }
@@ -231,7 +252,7 @@ const CombatMap = ({ rows, cols, tokens, terrainMap }) => {
             ref={tokenRefs.current[index]}
             key={token.id}
             className={`moveableIcon${index}`}
-            src={token.url}
+            src={tokenImages[token.image]}
             alt="Token"
             style={{
               transform: `translate(${iconPositions[token.id]?.x}px, ${iconPositions[token.id]?.y}px)`,

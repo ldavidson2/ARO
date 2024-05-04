@@ -2,7 +2,6 @@ import React from "react";
 import "./CombatMap.css";
 
 const Hexagon = (backgroundImage) => {
-    console.log(backgroundImage.backgroundImage);
   return (
     <div className="hexagon">
       <div className="hexLeft"></div>

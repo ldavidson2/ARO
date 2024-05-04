@@ -1,13 +1,14 @@
 .combatMap {
-    margin: auto;
-    height: 60svh;
-    width: 50.5vw;
+    position: absolute;
+    left: 24vw;
+    height: 75svh;
+    width: 70vw;
     min-width: 550px;
-    border: 1px #000 solid;
+    /* border: 1px #000 solid; */
 }
 
 .combatMap img {
-    width: 3.25vw;
+    width: 3.15vw;
     position: absolute;
 }
 

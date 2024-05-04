@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./CharacterSheet.css";
-import Jillie from "./images/Jillie.png";
 import armorClass from "./images/armor-class.png";
 import movementSpeed from "./images/movement-speed.png";
 
@@ -222,7 +221,7 @@ const CharacterSheet = ({ characterId }) => {
         </div>
       </div>
       <div className="rightColumn">
-        <img src={Jillie} id="characterArt" alt="Character Art" />
+        {/* <img src={Jillie} id="characterArt" alt="Character Art" /> */}
         <div className="movementAndArmor">
           <label>
             <img src={movementSpeed} alt="Movement Speed" />

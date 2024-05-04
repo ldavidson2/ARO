@@ -18,7 +18,9 @@ const Home = () => {
   const [generatedImageLink, setGeneratedImageLink] = useState(meme);
   const [imageButtonContainerStyle, setImageButtonContainertyle] = useState("ImageButtonContainer");
   const [awaitingResponse, setAwaitingResponse] = useState(false);
-  const [AROResponse, setAROResponse] = useState("");
+  const [AROResponse, setAROResponse] = useState(
+    "As your group emerges from the dense, dark embrace of the ancient forest, you find yourselves stepping into a vast, open clearing. The trees behind you whisper with the movements of smaller creatures, but ahead, the landscape opens dramatically, offering a blend of both danger and opportunity. Sunlight pierces through the canopy behind you, casting long shadows over the grass that sways gently in the breeze—a stark contrast to the oppressive darkness of the woods. Across the grassy expanse, the land subtly transforms; stone and sand disrupt the green tapestry, leading toward a snaking ribbon of water that cuts through the terrain. This stream, shimmering under the sunlight, flows across your path, creating a natural barrier that you must navigate. As your eyes trace its path, you notice that the stream widens, its banks marshy and treacherous. To the south, beyond this rocky and water-riddled obstacle zone, the terrain rises slightly. Larger rocks and boulders define this higher ground, suggesting a more solid footing but also more exposure. Here, the stream’s end can be seen flowing into a large pool, its waters dark and still, bordered by sand—a hauntingly serene mirror reflecting the chaos of your forthcoming confrontation. As you take in this sprawling scene, the signs of your adversaries are unmistakable. To your far right, near the southeastern edge of the clearing where shadows meld with sunlight, the hulking form of a Minotaur paces slowly. Its breaths are like puffs of steam in the cool air, and each step is deliberate, heavy, shaking the slight pebbles around its feet. Closer to the central stream, just off the rough path where the rocks meet the water, the massive, serpentine coils of a Hydra disturb the water, sending ripples lapping at the banks. It’s an unsettling sight—the creature’s multiple heads, each with its own lethal gaze, swivel alertly, watching for any movement. And there, near the northern boundary where the field meets the melancholic forest, a Cyclops stands, its single, eerie eye scanning the landscape. Its club, fashioned from a gnarled tree trunk, rests against its shoulder, ready to swing with devastating force. You face these formidable foes across a terrain that challenges both the mind and body. Strategy here is as important as strength—the choices you make in navigating this complex landscape could mean the difference between victory and defeat."
+  );
   const [dialogHistory, setDialogHistory] = useState(["", ""]);
   const [isRecording, setIsRecording] = useState(false);
   const [asideShowing, setAsideShowing] = useState(false);
@@ -27,21 +29,56 @@ const Home = () => {
   const [characterSheetOpen, setCharacterSheetOpen] = useState(false);
   const [characters, setCharacters] = useState();
   const [characterId, setCharacterId] = useState();
+  const [inCombat, setInCombat] = useState(true);
   const tokens = [
-    { id: 1, row: 0, column: 0, url: "https://preview.redd.it/3hdi9fk7ayw81.png?width=550&format=png&auto=webp&s=da1c7b6c9afcf9f8004384975f98846528a7b214" },
-    { id: 2, row: 6, column: 3, url: "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/7ad89412-f260-4de8-9220-746d0683c0d0/dao6dot-59c25a34-9197-47c0-9581-0226b477a288.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzdhZDg5NDEyLWYyNjAtNGRlOC05MjIwLTc0NmQwNjgzYzBkMFwvZGFvNmRvdC01OWMyNWEzNC05MTk3LTQ3YzAtOTU4MS0wMjI2YjQ3N2EyODgucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.2GFO2Z8JFOxDafOIracG6C78lhtIA5oOyGH43DWggMM" },
-    { id: 3, row: 2, column: 16, url: "https://raw.githubusercontent.com/IsThisMyRealName/too-many-tokens-dnd/main/Thug/ThugElfFemaleMelee%20(10).webp" },
-    // Add more tokens as needed
+    {
+      id: 1,
+      row: 6,  // Moved from row 0 to row 6
+      column: 24,
+      image: "minotaur",
+    },
+    {
+      id: 2,
+      row: 6,
+      column: 6,  // Moved right to column 6
+      image: "cyclops",
+    },
+    {
+      id: 3,
+      row: 7,
+      column: 5,  // Moved left to column 5
+      image: "hydra",
+    },
+    {
+      id: 4,
+      row: 7,  // Jillie moved to row 7
+      column: 4,
+      image: "jillie",
+    },
+    {
+      id: 5,
+      row: 6,  // Lou moved to row 6
+      column: 4,
+      image: "lou",
+    },
+    {
+      id: 6,
+      row: 9,  // Giant moved down closer to the central area
+      column: 23,
+      image: "giant",
+    }
   ];
   const terrainMap = [
-    ["water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water"],
-    ["water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water"],
-    ["sand", "sand", "sand", "sand", "sand", "sand", "sand", "sand", "sand", "sand", "sand", "sand", "sand", "sand", "sand", "sand", "sand", "sand"],
-    ["sand", "sand", "sand", "sand", "sand", "sand", "sand", "sand", "sand", "sand", "sand", "sand", "sand", "sand", "sand", "sand", "sand", "sand"],
-    ["grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass"],
-    ["grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass"],
-    ["forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest"],
-    ["forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest"]
+    ["forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest"],
+    ["forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest"],
+    ["forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest"],
+    ["forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest"],
+    ["grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass"],
+    ["grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass"],
+    ["grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass"],
+    ["stone", "stone", "stone", "stone", "stone", "sand", "sand", "water", "water", "water", "water", "water", "water", "water", "water", "sand", "sand", "stone", "stone", "stone", "stone", "stone", "stone", "stone", "stone"],
+    ["water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water"],
+    ["sand", "sand", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "water", "sand", "sand"]
   ];
   let menuRef = useRef(null);
 
@@ -157,28 +194,51 @@ const Home = () => {
         </div>
       )}
       <div id="left">
-        <div>
-          <CombatMap rows={8} cols={18} tokens={tokens} terrainMap={terrainMap} />
-        </div>
-        {awaitingResponse ? (
-          <div className="dots">
-            <div className="dots-pulse"></div>
-          </div>
+        {inCombat ? (
+          <>
+            <div>
+              <CombatMap rows={10} cols={25} tokens={tokens} terrainMap={terrainMap} />
+            </div>
+            <div className="combatResponse">
+              {awaitingResponse ? (
+                <div className="dots">
+                  <div className="dots-pulse"></div>
+                </div>
+              ) : (
+                <div>
+                  <p>{AROResponse}</p>
+                </div>
+              )}
+            </div>
+            <div id="combatTextToSpeech">
+              <TextToSpeech text={AROResponse} />
+            </div>
+          </>
         ) : (
-          <div>
-            <p>{AROResponse}</p>
-          </div>
+          <>
+            <div className="aroResponse">
+              {awaitingResponse ? (
+                <div className="dots">
+                  <div className="dots-pulse"></div>
+                </div>
+              ) : (
+                <div>
+                  <p>{AROResponse}</p>
+                </div>
+              )}
+            </div>
+            <div id="textToSpeech">
+              <TextToSpeech text={AROResponse} />
+            </div>
+          </>
         )}
+
         {/* <FileUpload /> */}
-        <div id="textToSpeech">
-          <TextToSpeech text={AROResponse} />
-        </div>
       </div>
       <div id="right">
         <form>
-          <div id="generatedImage">
-            <img src={generatedImageLink} alt="Generated Image" />
-          </div>
+          <div id="generatedImage">{!inCombat && <img src={generatedImageLink} alt="Generated Image" />}</div>
+
           <div id="userInput">
             {isRecording ? (
               <button className={imageButtonContainerStyle} type="button" onClick={stopRecording}>
