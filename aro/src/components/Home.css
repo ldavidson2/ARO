@@ -70,11 +70,12 @@
 
 .combatResponse p {
     height: 87.95svh !important;
-    direction: rtl !important;
     margin-left: -0.85vw !important;
     padding-top: 0svh !important;
     padding-bottom: 2svh;
     padding-left: 0.4vw;
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;  /* Firefox */
 }
 
 .dots {

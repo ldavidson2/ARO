@@ -40,278 +40,16 @@ const Home = () => {
   //   { id: 2, row: 5, column: 16, image: "minotaur" },
   //   { id: 3, row: 5, column: 20, image: "minotaur" },
   // ];
-  // const terrainMap = [
-  //   [
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "dirt",
-  //     "dirt",
-  //     "dirt",
-  //     "dirt",
-  //     "dirt",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //   ],
-  //   [
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "dirt",
-  //     "dirt",
-  //     "dirt",
-  //     "dirt",
-  //     "dirt",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //   ],
-  //   [
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "dirt",
-  //     "dirt",
-  //     "dirt",
-  //     "dirt",
-  //     "dirt",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //   ],
-  //   [
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "dirt",
-  //     "dirt",
-  //     "dirt",
-  //     "dirt",
-  //     "dirt",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //   ],
-  //   [
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "dirt",
-  //     "dirt",
-  //     "dirt",
-  //     "dirt",
-  //     "dirt",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //   ],
-  //   [
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "dirt",
-  //     "dirt",
-  //     "dirt",
-  //     "dirt",
-  //     "dirt",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //   ],
-  //   [
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "dirt",
-  //     "dirt",
-  //     "dirt",
-  //     "dirt",
-  //     "dirt",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //   ],
-  //   [
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "dirt",
-  //     "dirt",
-  //     "dirt",
-  //     "dirt",
-  //     "dirt",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //   ],
-  //   [
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "dirt",
-  //     "dirt",
-  //     "dirt",
-  //     "dirt",
-  //     "dirt",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //   ],
-  //   [
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "dirt",
-  //     "dirt",
-  //     "dirt",
-  //     "dirt",
-  //     "dirt",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //     "forest",
-  //   ],
-  // ];
+  // const terrainMap = [["f", "f", "f", "f", "f", "f", "f", "f", "f", "f", "g", "g", "g", "g", "g", "f", "f", "f", "f", "f", "f", "f", "f", "f", "f"],
+  // ["f", "f", "f", "f", "f", "f", "f", "f", "f", "f", "g", "g", "g", "g", "g", "f", "f", "f", "f", "f", "f", "f", "f", "f", "f"],
+  // ["f", "f", "f", "f", "f", "f", "f", "f", "f", "f", "g", "g", "g", "g", "g", "f", "f", "f", "f", "f", "f", "f", "f", "f", "f"],
+  // ["f", "f", "f", "f", "f", "f", "f", "f", "f", "f", "g", "g", "g", "g", "g", "f", "f", "f", "f", "f", "f", "f", "f", "f", "f"],
+  // ["f", "f", "f", "f", "f", "f", "f", "f", "f", "f", "g", "g", "g", "g", "g", "f", "f", "f", "f", "f", "f", "f", "f", "f", "f"],
+  // ["f", "f", "f", "f", "f", "f", "f", "f", "f", "f", "g", "g", "g", "g", "g", "f", "f", "f", "f", "f", "f", "f", "f", "f", "f"],
+  // ["f", "f", "f", "f", "f", "f", "f", "f", "f", "f", "g", "g", "g", "g", "g", "f", "f", "f", "f", "f", "f", "f", "f", "f", "f"],
+  // ["f", "f", "f", "f", "f", "f", "f", "f", "f", "f", "g", "g", "g", "g", "g", "f", "f", "f", "f", "f", "f", "f", "f", "f", "f"],
+  // ["f", "f", "f", "f", "f", "f", "f", "f", "f", "f", "g", "g", "g", "g", "g", "f", "f", "f", "f", "f", "f", "f", "f", "f", "f"],
+  // ["f", "f", "f", "f", "f", "f", "f", "f", "f", "f", "g", "g", "g", "g", "g", "f", "f", "f", "f", "f", "f", "f", "f", "f", "f"]];
 
   useEffect(() => {
     getCharacters();
@@ -341,23 +79,26 @@ const Home = () => {
 
   async function queryARO() {
     setDisplayMessage("");
+    let response;
     if (message.toLowerCase().includes("generate an image of")) {
-      const response = await axios.get(`/queryARO/${message}`, {});
+      response = await axios.get(`/queryARO/${message}`, {});
       setGeneratedImageLink(response.data);
     } else {
       setAwaitingResponse(true);
       addDialogToList(message);
-      const response = await axios.get(`/queryARO/${message}`, {});
-      console.log(response.data);
-      console.log(response.data.Mode);
-      if ((response.data.Mode).toLowerCase().includes("combat initiation")) {
+      if (inCombat) {
+        response = await axios.get(`/queryARO/${message + "current token positions: " + tokens}`, {});
+      } else {
+        response = await axios.get(`/queryARO/${message}`, {});
+        console.log(response.data);
+      }
+      if (response.data.Mode.toLowerCase().includes("combat initiation")) {
         await setTerrainMap(response.data.Terrain);
         await setTokens(response.data.Tokens);
         setInCombat(true);
-      }
-      else if ((response.data.Mode).toLowerCase().includes("combat")) {
+      } else if (response.data.Mode.toLowerCase().includes("combat")) {
         await setTokens(response.data.Tokens);
-        setInCombat(true);        
+        setInCombat(true);
       }
       console.log(response.data.Mode);
       const newDialog = response.data.Response;
@@ -404,6 +145,10 @@ const Home = () => {
     }
   };
 
+  const handleTokenPositionChange = (data) => {
+    setTokens(data);
+  };
+
   return (
     <div id="main">
       {characterSheetOpen && <CharacterSheet characterId={characterId} />}
@@ -441,7 +186,13 @@ const Home = () => {
         {inCombat ? (
           <>
             <div>
-              <CombatMap rows={10} cols={25} tokens={tokens} terrainMap={terrainMap} />
+              <CombatMap
+                rows={10}
+                cols={25}
+                tokens={tokens}
+                terrainMap={terrainMap}
+                onTokenPositionChange={handleTokenPositionChange}
+              />
             </div>
             <div className="combatResponse">
               {awaitingResponse ? (

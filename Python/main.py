@@ -87,7 +87,7 @@ async def get_response(user_message):
         url = await generate_image(json.loads(messages.data[0].content[0].text.value)['Response'])
         return url
     else:
-        message = await add_message_to_thread("Determin the appropriate response and return only one response to the following input: " + user_message)
+        message = await add_message_to_thread("Review all provided instructions and files before responding. Determine the appropriate response and return only one response, ensuring it follows the provided JSON formatting but doesn't copy the content, to the following input: " + user_message)
         messages = await ask_ARO()
         response = messages.data[0].content[0].text.value
         print(response)

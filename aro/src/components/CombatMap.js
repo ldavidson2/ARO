@@ -12,12 +12,13 @@ import water from "./images/tiles/water-tile.png"
 import forest from "./images/tiles/forest-tile.png"
 import cobblestone from "./images/tiles/cobblestone-tile.png"
 import dirt from "./images/tiles/dirt-tile.png"
+import bush from "./images/tiles/bush-tile.png"
 import lava from "./images/tiles/lava-tile.png"
 import stone from "./images/tiles/stone-tile.png"
 import marbleFloor from "./images/tiles/marble-floor-tile.png"
 import woodFloor from "./images/tiles/wood-floor-tile.png"
 
-const CombatMap = ({ rows, cols, tokens, terrainMap }) => {
+const CombatMap = ({ rows, cols, tokens, terrainMap, onTokenPositionChange }) => {
   const activeIconRef = useRef(null);
   const combatMapRef = useRef(null);
   const tokenRefs = useRef([]);
@@ -43,6 +44,7 @@ const CombatMap = ({ rows, cols, tokens, terrainMap }) => {
     s: stone,
     mf: marbleFloor,
     wf: woodFloor,
+    b: bush
   };
 
   useEffect(() => {
@@ -233,6 +235,8 @@ const CombatMap = ({ rows, cols, tokens, terrainMap }) => {
 
         tokens[tokenId - 1].row = newRow;
         tokens[tokenId - 1].column = newCol;
+
+        onTokenPositionChange(tokens);
 
         console.log("Token position:", { newRow, newCol });
       }
