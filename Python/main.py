@@ -89,8 +89,10 @@ async def get_response(user_message):
     else:
         message = await add_message_to_thread("Review all provided instructions and files before responding. Determine the appropriate response and return only one response, ensuring it follows the provided JSON formatting but doesn't copy the content, to the following input: " + user_message)
         messages = await ask_ARO()
-        response = messages.data[0].content[0].text.value
+        response = (messages.data[0].content[0].text.value).replace("“", '"')
+        # swap any “ for "
         print(response)
+        print(response[-2])
         return   Response(content=response, media_type="application/json") 
 
 async def add_message_to_thread(user_message):

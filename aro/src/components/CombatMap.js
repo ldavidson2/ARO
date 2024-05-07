@@ -7,16 +7,21 @@ import Giant from "./images/tokens/giant.png"
 import Hydra from "./images/tokens/hydra.png"
 import Minotaur from "./images/tokens/minotaur.png"
 import grass from "./images/tiles/grass-tile.png"
+import grassPath from "./images/tiles/grass-path-tile.png"
 import sand from "./images/tiles/sand-tile.png"
 import water from "./images/tiles/water-tile.png"
 import forest from "./images/tiles/forest-tile.png"
+import cobblestonePath from "./images/tiles/cobblestone-path-tile.png"
 import cobblestone from "./images/tiles/cobblestone-tile.png"
+import dirtPath from "./images/tiles/dirt-path-tile.png"
 import dirt from "./images/tiles/dirt-tile.png"
 import bush from "./images/tiles/bush-tile.png"
 import lava from "./images/tiles/lava-tile.png"
 import stone from "./images/tiles/stone-tile.png"
 import marbleFloor from "./images/tiles/marble-floor-tile.png"
 import woodFloor from "./images/tiles/wood-floor-tile.png"
+import stoneBush from "./images/tiles/stone-bush-tile.png"
+import snow from "./images/tiles/snow-tile.png"
 
 const CombatMap = ({ rows, cols, tokens, terrainMap, onTokenPositionChange }) => {
   const activeIconRef = useRef(null);
@@ -34,17 +39,22 @@ const CombatMap = ({ rows, cols, tokens, terrainMap, onTokenPositionChange }) =>
     minotaur: Minotaur,
   }
   const terrainImages = {
+    gp: grassPath,
     g: grass,
     s: sand,
     w: water,
     f: forest,
+    cP: cobblestonePath,
     c: cobblestone,
+    dP: dirtPath,
     d: dirt,
     l: lava,
-    s: stone,
+    st: stone,
+    stb: stoneBush,
     mf: marbleFloor,
     wf: woodFloor,
-    b: bush
+    b: bush,
+    sn: snow,
   };
 
   useEffect(() => {

@@ -35,21 +35,8 @@ const Home = () => {
   const menuRef = useRef(null);
   const asideRef = useRef(null);
   const asideToggleRef = useRef(null);
-  // const tokens = [
-  //   { id: 1, row: 5, column: 10, image: "lou" },
-  //   { id: 2, row: 5, column: 16, image: "minotaur" },
-  //   { id: 3, row: 5, column: 20, image: "minotaur" },
-  // ];
-  // const terrainMap = [["f", "f", "f", "f", "f", "f", "f", "f", "f", "f", "g", "g", "g", "g", "g", "f", "f", "f", "f", "f", "f", "f", "f", "f", "f"],
-  // ["f", "f", "f", "f", "f", "f", "f", "f", "f", "f", "g", "g", "g", "g", "g", "f", "f", "f", "f", "f", "f", "f", "f", "f", "f"],
-  // ["f", "f", "f", "f", "f", "f", "f", "f", "f", "f", "g", "g", "g", "g", "g", "f", "f", "f", "f", "f", "f", "f", "f", "f", "f"],
-  // ["f", "f", "f", "f", "f", "f", "f", "f", "f", "f", "g", "g", "g", "g", "g", "f", "f", "f", "f", "f", "f", "f", "f", "f", "f"],
-  // ["f", "f", "f", "f", "f", "f", "f", "f", "f", "f", "g", "g", "g", "g", "g", "f", "f", "f", "f", "f", "f", "f", "f", "f", "f"],
-  // ["f", "f", "f", "f", "f", "f", "f", "f", "f", "f", "g", "g", "g", "g", "g", "f", "f", "f", "f", "f", "f", "f", "f", "f", "f"],
-  // ["f", "f", "f", "f", "f", "f", "f", "f", "f", "f", "g", "g", "g", "g", "g", "f", "f", "f", "f", "f", "f", "f", "f", "f", "f"],
-  // ["f", "f", "f", "f", "f", "f", "f", "f", "f", "f", "g", "g", "g", "g", "g", "f", "f", "f", "f", "f", "f", "f", "f", "f", "f"],
-  // ["f", "f", "f", "f", "f", "f", "f", "f", "f", "f", "g", "g", "g", "g", "g", "f", "f", "f", "f", "f", "f", "f", "f", "f", "f"],
-  // ["f", "f", "f", "f", "f", "f", "f", "f", "f", "f", "g", "g", "g", "g", "g", "f", "f", "f", "f", "f", "f", "f", "f", "f", "f"]];
+  // const tokens =     [ {id: 1, row: 5, column: 12, image: "lou", entity: "player"}, {id: 2, row: 5, column: 6, image: "minotaur", entity: "non-player"}, {id: 3, row: 5, column: 18, image: "minotaur", entity: "non-player"}];
+  // const terrainMap = [["dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP"], ["g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g"], ["dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP"], ["g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g"], ["dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP"], ["b","b","g","g","g","g","g","stb","stb","g","g","stb","g","g","g","g","g","g","g","stb","stb","g","g","g","g"], ["dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP"], ["g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g"], ["dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP"], ["g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g"]];
 
   useEffect(() => {
     getCharacters();
@@ -91,12 +78,13 @@ const Home = () => {
       } else {
         response = await axios.get(`/queryARO/${message}`, {});
         console.log(response.data);
+        console.log(response.data.Mode);
       }
-      if (response.data.Mode.toLowerCase().includes("combat initiation")) {
+      if (response.data.Mode.includes("combat initiation")) {
         await setTerrainMap(response.data.Terrain);
         await setTokens(response.data.Tokens);
         setInCombat(true);
-      } else if (response.data.Mode.toLowerCase().includes("combat")) {
+      } else if (response.data.Mode.includes("combat")) {
         await setTokens(response.data.Tokens);
         setInCombat(true);
       }
