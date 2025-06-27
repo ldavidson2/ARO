@@ -1,27 +1,29 @@
 import React, { useState, useRef, useEffect, createRef } from "react";
 import Hexagon from "./Hexagon.js";
-import Jillie from "./images/tokens/Jillie.png"
-import Lou from "./images/tokens/Lou.png"
-import Cyclops from "./images/tokens/cyclops.png"
-import Giant from "./images/tokens/giant.png"
-import Hydra from "./images/tokens/hydra.png"
-import Minotaur from "./images/tokens/minotaur.png"
-import grass from "./images/tiles/grass-tile.png"
-import grassPath from "./images/tiles/grass-path-tile.png"
-import sand from "./images/tiles/sand-tile.png"
-import water from "./images/tiles/water-tile.png"
-import forest from "./images/tiles/forest-tile.png"
-import cobblestonePath from "./images/tiles/cobblestone-path-tile.png"
-import cobblestone from "./images/tiles/cobblestone-tile.png"
-import dirtPath from "./images/tiles/dirt-path-tile.png"
-import dirt from "./images/tiles/dirt-tile.png"
-import bush from "./images/tiles/bush-tile.png"
-import lava from "./images/tiles/lava-tile.png"
-import stone from "./images/tiles/stone-tile.png"
-import marbleFloor from "./images/tiles/marble-floor-tile.png"
-import woodFloor from "./images/tiles/wood-floor-tile.png"
-import stoneBush from "./images/tiles/stone-bush-tile.png"
-import snow from "./images/tiles/snow-tile.png"
+import Jillie from "./images/tokens/Jillie.png";
+import Lou from "./images/tokens/Lou.png";
+import Cyclops from "./images/tokens/cyclops.png";
+import Giant from "./images/tokens/giant.png";
+import Hydra from "./images/tokens/hydra.png";
+import Minotaur from "./images/tokens/minotaur.png";
+import grass from "./images/tiles/grass-tile.png";
+import grassPath from "./images/tiles/grass-path-tile.png";
+import sand from "./images/tiles/sand-tile.png";
+import water from "./images/tiles/water-tile.png";
+import forest from "./images/tiles/forest-tile.png";
+import cobblestonePath from "./images/tiles/cobblestone-path-tile.png";
+import cobblestone from "./images/tiles/cobblestone-tile.png";
+import cobblestoneBush from "./images/tiles/cobblestone-bush-tile.png";
+import dirtPath from "./images/tiles/dirt-path-tile.png";
+import dirt from "./images/tiles/dirt-tile.png";
+import bush from "./images/tiles/bush-tile.png";
+import lava from "./images/tiles/lava-tile.png";
+import stone from "./images/tiles/stone-tile.png";
+import marbleFloor from "./images/tiles/marble-floor-tile.png";
+import woodFloor from "./images/tiles/wood-floor-tile.png";
+import stoneBush from "./images/tiles/stone-bush-tile.png";
+import sandBush from "./images/tiles/sand-bush-tile.png";
+import snow from "./images/tiles/snow-tile.png";
 
 const CombatMap = ({ rows, cols, tokens, terrainMap, onTokenPositionChange }) => {
   const activeIconRef = useRef(null);
@@ -37,7 +39,7 @@ const CombatMap = ({ rows, cols, tokens, terrainMap, onTokenPositionChange }) =>
     giant: Giant,
     hydra: Hydra,
     minotaur: Minotaur,
-  }
+  };
   const terrainImages = {
     gp: grassPath,
     g: grass,
@@ -51,6 +53,8 @@ const CombatMap = ({ rows, cols, tokens, terrainMap, onTokenPositionChange }) =>
     l: lava,
     st: stone,
     stb: stoneBush,
+    sb: sandBush,
+    cb: cobblestoneBush,
     mf: marbleFloor,
     wf: woodFloor,
     b: bush,
@@ -73,23 +77,30 @@ const CombatMap = ({ rows, cols, tokens, terrainMap, onTokenPositionChange }) =>
     return () => {
       window.removeEventListener("resize", handleResize);
     };
+    centerAllTokens();
   }, [tokens]);
 
-    const handleResize = () => {
-      centerAllTokens();
-    };
+  const handleResize = () => {
+    centerAllTokens();
+  };
 
   const calculateHexCoordinates = (row, col) => {
     const hexStyles = window.getComputedStyle(document.querySelector(".hexagon"));
     const hexLeftWidth = parseFloat(window.getComputedStyle(document.querySelector(".hexLeft")).borderRightWidth);
     const hexRightWidth = parseFloat(window.getComputedStyle(document.querySelector(".hexRight")).borderLeftWidth);
     let currentHexWidth = (parseFloat(hexStyles.width) + hexLeftWidth + hexRightWidth) / 2;
-    let currentHexHeight = parseFloat(hexStyles.height);
+    let currentHexHeight = parseFloat(window.getComputedStyle(document.querySelector(".hexCentre")).margin) * 2;
+    // console.log(parseFloat(window.getComputedStyle(document.querySelector(".hexCentre")).margin));
     let currentTokenWidth = parseFloat(window.getComputedStyle(document.querySelector(".moveableIcon0")).width);
     let currentTokenHeight = parseFloat(window.getComputedStyle(document.querySelector(".moveableIcon0")).height);
     let combatMapRect = combatMapRef.current.getBoundingClientRect();
-
-    let x = (col + 10) * currentHexWidth + currentHexWidth / 2;
+    let x;
+    if (col <= 5) {
+      x = (col + 9) * currentHexWidth + currentHexHeight / 2;
+    }
+    else {
+      x = (col + 10) * currentHexWidth + currentHexWidth / 2;
+    }
     let y;
 
     if (col % 2 !== 0) {
@@ -154,14 +165,13 @@ const CombatMap = ({ rows, cols, tokens, terrainMap, onTokenPositionChange }) =>
 
   const centerAllTokens = () => {
     tokens.forEach((token) => {
-        const { row, column } = token;
-        const { x, y } = calculateHexCoordinates(row, column);
-        setIconPositions((prevPositions) => ({
-            ...prevPositions,
-            [token.id]: { x, y },
-          }));
-      });
-
+      const { row, column } = token;
+      const { x, y } = calculateHexCoordinates(row, column);
+      setIconPositions((prevPositions) => ({
+        ...prevPositions,
+        [token.id]: { x, y },
+      }));
+    });
   };
 
   async function handleMouseDown(event, tokenId) {
@@ -281,7 +291,10 @@ const CombatMap = ({ rows, cols, tokens, terrainMap, onTokenPositionChange }) =>
           {Array.from({ length: rows }).map((_, rowIndex) => (
             <div className="hexRow" key={rowIndex}>
               {Array.from({ length: cols }).map((_, colIndex) => (
-                <Hexagon key={`${rowIndex}-${colIndex}`} backgroundImage={terrainImages[terrainMap[rowIndex][colIndex]]} />
+                <Hexagon
+                  key={`${rowIndex}-${colIndex}`}
+                  backgroundImage={terrainImages[terrainMap[rowIndex][colIndex]]}
+                />
               ))}
             </div>
           ))}

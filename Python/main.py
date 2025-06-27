@@ -9,6 +9,8 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse
 import json
 import tempfile
+from pydantic import BaseModel
+from typing import List, Dict, Any
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -26,42 +28,23 @@ table = dynamodb.Table(os.getenv('TABLE'))
 
 
 client = OpenAI()
-thread = client.beta.threads.create()
+ARO_thread = client.beta.threads.create()
+terrain_map_thread = client.beta.threads.create()
+tokens_thread = client.beta.threads.create()
 VECTOR_STORE_ID = "vs_ZlLWms8d7tFBYyGZx5zLDaBh"
 
-# campaign_info_exists = False
-# campaign_format_exists = False
+class Token(BaseModel):
+    id: int
+    row: int
+    column: int
+    image: str
+    entity: str
 
-# files = client.files.list()
-
-# for file in files.data:
-#     print(file)
-#     if file.filename == "campaign-info.txt":
-#         campaign_info_exists = True
-#     if file.filename == "campaign.json":
-#         campaign_format_exists = True
-
-# if not campaign_info_exists:
-#     campaign_info = client.files.create(
-#         file=open("aro-files/campaign-info.txt", "br"),
-#         purpose="assistants"
-#     )
-#     campaign_info_exists = True
-
-# if not campaign_format_exists:
-#     campaign_format = client.files.create(
-#         file=open("aro-files/campaign.json", "br"),
-#         purpose="assistants"
-#     )
-#     campaign_format_exists = True
-
-# try:
-#     my_updated_assistant = client.beta.assistants.update(
-#         os.getenv('ASSISTANT_ID'),
-#         file_ids=[campaign_info.id, campaign_format.id],
-#     )
-# except:
-#     print("could not find the files.")
+class RequestBody(BaseModel):
+    user_message: str
+    token_positions: str
+    terrain_map: str
+    in_combat: bool
 
 
 app.add_middleware(
@@ -78,26 +61,38 @@ async def root(request: Request):
         html = f.read()
     return HTMLResponse(content=html, status_code=200)
 
-@app.get("/queryARO/{user_message}")
-async def get_response(user_message):
+@app.post("/queryARO")
+async def get_response(request_body: RequestBody):
+    user_message = request_body.user_message
+    token_positions = request_body.token_positions
+    terrain_map = request_body.terrain_map
+    in_combat = request_body.in_combat
+    print(user_message)
+    print(token_positions)
+    print(terrain_map)
+    print(in_combat)
     if "generate an image of" in user_message.lower():
         new_prompt = "In less than 1000 characters, describe " + user_message.lower().strip("generate an image of")
-        message = await add_message_to_thread(new_prompt)
+        message = await add_message_to_thread(ARO_thread.id, new_prompt)
         messages = await ask_ARO()
-        url = await generate_image(json.loads(messages.data[0].content[0].text.value)['Response'])
+        # print(messages.Response)
+        print(messages['Response'])
+        url = await generate_image((messages['Response']).lstrip('{"Mode": "normal", "Response": "').rstrip('"}'))
         return url
-    else:
-        message = await add_message_to_thread("Review all provided instructions and files before responding. Determine the appropriate response and return only one response, ensuring it follows the provided JSON formatting but doesn't copy the content, to the following input: " + user_message)
+    elif in_combat:
+        message = await add_message_to_thread(ARO_thread.id, user_message + " Current token positions: " + token_positions + ", terrain map: " + terrain_map + ", please take all appropriate non-player turns now.")
         messages = await ask_ARO()
-        response = (messages.data[0].content[0].text.value).replace("“", '"')
-        # swap any “ for "
-        print(response)
-        print(response[-2])
-        return   Response(content=response, media_type="application/json") 
+        print(messages)
+        return   Response(content=messages, media_type="application/json") 
+    else:
+        message = await add_message_to_thread(ARO_thread.id, "Review all provided instructions and files before responding. Determine the appropriate response and return only one response, ensuring it follows the provided JSON formatting (all keys and values must use double quotes) but doesn't copy the content, to the following input: " + user_message)
+        messages = await ask_ARO()
+        print(messages)
+        return   Response(content=messages, media_type="application/json") 
 
-async def add_message_to_thread(user_message):
+async def add_message_to_thread(thread_id, user_message):
     message = client.beta.threads.messages.create(
-        thread_id=thread.id,
+        thread_id,
         role="user",
         content= user_message
     )
@@ -160,17 +155,61 @@ async def upload_file(file: UploadFile = File(...)):
 
 async def ask_ARO():
     run =  client.beta.threads.runs.create(
-        thread_id=thread.id,
-        assistant_id=os.getenv('ASSISTANT_ID')
+        thread_id=ARO_thread.id,
+        assistant_id=os.getenv('ARO_ASSISTANT_ID')
     )
 
     while True:
-        runInfo = client.beta.threads.runs.retrieve(thread_id=thread.id, run_id=run.id)
+        runInfo = client.beta.threads.runs.retrieve(thread_id=ARO_thread.id, run_id=run.id)
         if runInfo.completed_at:
             break
 
-    messages = client.beta.threads.messages.list(thread.id)
-    return messages
+    messages = client.beta.threads.messages.list(ARO_thread.id)
+    # having an error with the if statement sometimes
+    print(messages.data[0].content[0].text.value)
+    if "combat initiation" in (json.loads(((messages.data[0].content[0].text.value).replace("”", '"')).replace("“", '"').lstrip('```json').rstrip('```'))['Mode']):
+        combat_description = json.loads(((messages.data[0].content[0].text.value).replace("”", '"')).replace("“", '"').lstrip('```json').rstrip('```'))['Response']
+        response = await generate_combat(combat_description)
+        return json.dumps(response)
+    else:
+        return ((messages.data[0].content[0].text.value).replace("”", '"')).replace("“", '"')
+
+async def generate_combat(combat_description):
+    await add_message_to_thread(terrain_map_thread.id, combat_description)
+    terrain_map_run =  client.beta.threads.runs.create(
+        thread_id=terrain_map_thread.id,
+        assistant_id=os.getenv('TERRAIN_MAP_ASSISTANT_ID')
+    )
+
+    while True:
+        runInfo = client.beta.threads.runs.retrieve(thread_id=terrain_map_thread.id, run_id=terrain_map_run.id)
+        if runInfo.completed_at:
+            break
+
+    messages = client.beta.threads.messages.list(terrain_map_thread.id)
+    terrain_map = ((messages.data[0].content[0].text.value).replace("”", '"')).replace("“", '"').lstrip('```json').rstrip('```')
+    terrain_map_string = terrain_map.replace('{"Terrain": ', '')
+    token_message = "Generate token locations based on the following description and terrain map. Description: '" + combat_description + "' Terrain map: " + terrain_map_string.rstrip('}')
+    token_positions = await generate_token_positions("Generate a terrain map for the following description: '" + token_message + "'")
+    response = {"Mode": "combat initiation", "Response": combat_description, "Terrain": json.loads(terrain_map)['Terrain'], "Tokens": token_positions}
+    # had an issue here with json.loads(terrain_map)['Terrain']
+    return response 
+
+async def generate_token_positions(terrain_map):
+    await add_message_to_thread(tokens_thread.id, terrain_map)
+    tokens_run =  client.beta.threads.runs.create(
+        thread_id=tokens_thread.id,
+        assistant_id=os.getenv('TOKENS_ASSISTANT_ID')
+    )
+
+    while True:
+        runInfo = client.beta.threads.runs.retrieve(thread_id=tokens_thread.id, run_id=tokens_run.id)
+        if runInfo.completed_at:
+            break
+
+    messages = client.beta.threads.messages.list(tokens_thread.id)
+    response = json.loads((messages.data[0].content[0].text.value).lstrip('```json').rstrip('```'))['Tokens']
+    return response
 
 async def generate_image(description):
     response = client.images.generate(

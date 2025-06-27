@@ -18,9 +18,7 @@ const Home = () => {
   const [generatedImageLink, setGeneratedImageLink] = useState(meme);
   const [imageButtonContainerStyle, setImageButtonContainertyle] = useState("ImageButtonContainer");
   const [awaitingResponse, setAwaitingResponse] = useState(false);
-  const [AROResponse, setAROResponse] = useState(
-    ""
-  );
+  const [AROResponse, setAROResponse] = useState("");
   const [dialogHistory, setDialogHistory] = useState(["", ""]);
   const [isRecording, setIsRecording] = useState(false);
   const [asideShowing, setAsideShowing] = useState(false);
@@ -29,14 +27,28 @@ const Home = () => {
   const [characterSheetOpen, setCharacterSheetOpen] = useState(false);
   const [characters, setCharacters] = useState();
   const [characterId, setCharacterId] = useState();
-  const [tokens, setTokens] = useState();
-  const [terrainMap, setTerrainMap] = useState();
+  const [tokens, setTokens] = useState([]);
+  const [terrainMap, setTerrainMap] = useState([]);
   const [inCombat, setInCombat] = useState(false);
   const menuRef = useRef(null);
   const asideRef = useRef(null);
   const asideToggleRef = useRef(null);
-  // const tokens =     [ {id: 1, row: 5, column: 12, image: "lou", entity: "player"}, {id: 2, row: 5, column: 6, image: "minotaur", entity: "non-player"}, {id: 3, row: 5, column: 18, image: "minotaur", entity: "non-player"}];
-  // const terrainMap = [["dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP"], ["g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g"], ["dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP"], ["g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g"], ["dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP"], ["b","b","g","g","g","g","g","stb","stb","g","g","stb","g","g","g","g","g","g","g","stb","stb","g","g","g","g"], ["dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP"], ["g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g"], ["dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP","dP"], ["g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g"]];
+  //   const tokens = [
+  //     {"id": 1, "row": 8, "column": 12, "image": "jillie", "entity": "player"},
+  //     {"id": 2, "row": 3, "column": 21, "image": "minotaur", "entity": "non-player"}
+  //   ];
+  //   const terrainMap = [
+  //     ["g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","c","c"],
+  //     ["g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","c","c"],
+  //     ["g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","c","c"],
+  //     ["g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","b","b","b","g","g","g","g","c","c"],
+  //     ["g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","c","c","g"],
+  //     ["g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","c","c","g","g"],
+  //     ["g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","c","c","g","g"],
+  //     ["g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","c","c","c","c"],
+  //     ["g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","c","c","c","c"],
+  //     ["g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","c","c","g"]
+  // ];
 
   useEffect(() => {
     getCharacters();
@@ -68,17 +80,43 @@ const Home = () => {
     setDisplayMessage("");
     let response;
     if (message.toLowerCase().includes("generate an image of")) {
-      response = await axios.get(`/queryARO/${message}`, {});
+      response = await axios.post(`/queryARO`, {
+        user_message: message,
+        token_positions: tokens.toString(),
+        terrain_map: terrainMap.toString(),
+        in_combat: inCombat
+      });
       setGeneratedImageLink(response.data);
     } else {
       setAwaitingResponse(true);
       addDialogToList(message);
       if (inCombat) {
-        response = await axios.get(`/queryARO/${message + "current token positions: " + tokens}`, {});
+        console.log(tokens);
+        let tokenPositions = [];
+        tokens.forEach(function (token) {
+          tokenPositions["id"] = token.id;
+          tokenPositions["row"] = token.row;
+          tokenPositions["column"] = token.column;
+          tokenPositions["image"] = token.image;
+          tokenPositions["entity"] = token.entity;
+        });
+        setTokens(tokenPositions);
+        console.log(tokens);
+        console.log(terrainMap);
+        response = await axios.post(`/queryARO`, {
+          user_message: message,
+          token_positions: tokens.toString(),
+          terrain_map: terrainMap.toString(),
+          in_combat: inCombat
+        });
       } else {
-        response = await axios.get(`/queryARO/${message}`, {});
+        response = await axios.post(`/queryARO`, {
+          user_message: message,
+          token_positions: tokens.toString(),
+          terrain_map: terrainMap.toString(),
+          in_combat: inCombat
+        });
         console.log(response.data);
-        console.log(response.data.Mode);
       }
       if (response.data.Mode.includes("combat initiation")) {
         await setTerrainMap(response.data.Terrain);
@@ -88,7 +126,6 @@ const Home = () => {
         await setTokens(response.data.Tokens);
         setInCombat(true);
       }
-      console.log(response.data.Mode);
       const newDialog = response.data.Response;
       setAROResponse(newDialog);
       setAwaitingResponse(false);
